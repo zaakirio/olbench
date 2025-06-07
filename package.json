@@ -1,0 +1,62 @@
+{
+  "name": "olbench",
+  "version": "1.0.0",
+  "description": "Comprehensive Node.js-based benchmarking tool for Ollama local LLMs",
+  "main": "dist/index.js",
+  "bin": {
+    "olbench": "./dist/simple-cli.js"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/simple-cli.ts",
+    "dev-react": "node --import tsx/esm src/cli.tsx",
+    "build": "tsc",
+    "start": "node dist/cli.js",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "format": "prettier --write src/**/*.{ts,tsx}",
+    "typecheck": "tsc --noEmit",
+    "release": "semantic-release",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ollama",
+    "benchmark",
+    "llm",
+    "performance",
+    "testing",
+    "local-ai"
+  ],
+  "author": "Ollama Benchmark Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "dependencies": {
+    "@esbuild-kit/esm-loader": "^2.6.5",
+    "chalk": "^5.4.1",
+    "commander": "^14.0.0",
+    "figures": "^6.1.0",
+    "ink": "^6.0.0",
+    "ink-big-text": "^2.0.0",
+    "ink-box": "^1.0.0",
+    "ink-gradient": "^3.0.0",
+    "ink-select-input": "^6.2.0",
+    "ink-spinner": "^5.0.0",
+    "ink-table": "^3.1.0",
+    "ink-text-input": "^6.0.0",
+    "react": "^19.1.0",
+    "systeminformation": "^5.27.1",
+    "yaml": "^2.8.0"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@types/node": "^22.15.30",
+    "@types/react": "^19.1.6",
+    "eslint": "^9.28.0",
+    "prettier": "^3.5.3",
+    "semantic-release": "^21.0.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  }
+}
