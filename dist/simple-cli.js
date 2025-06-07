@@ -151,12 +151,28 @@ program
             const sizeInfo = await discovery.calculateDownloadSizeForMissingModels(modelsToTest);
             if (sizeInfo.installedCount > 0) {
                 console.log(`  Already installed: ${sizeInfo.installedCount} models`);
+                // Show installed model sizes for reference
+                if (options.verbose) {
+                    const installedModels = sizeInfo.breakdown.filter(m => m.isInstalled);
+                    installedModels.forEach(model => {
+                        console.log(`    • ${model.name}: ${discovery.formatSizeInfo(model.actualSizeGB || 0)}`);
+                    });
+                }
             }
-            if (sizeInfo.missingCount > 0 && sizeInfo.totalDownloadGB > 0) {
-                console.log(`  Need to download: ${sizeInfo.missingCount} models (${discovery.formatSizeInfo(sizeInfo.totalDownloadGB)})`);
-            }
-            else if (sizeInfo.missingCount > 0) {
-                console.log(`  Need to download: ${sizeInfo.missingCount} models (size unknown)`);
+            if (sizeInfo.missingCount > 0) {
+                if (sizeInfo.totalDownloadGB > 0) {
+                    console.log(`  Need to download: ${sizeInfo.missingCount} models (${discovery.formatSizeInfo(sizeInfo.totalDownloadGB)})`);
+                    // Show what needs to be downloaded
+                    if (options.verbose) {
+                        const missingModels = sizeInfo.breakdown.filter(m => !m.isInstalled && m.downloadGB > 0);
+                        missingModels.forEach(model => {
+                            console.log(`    • ${model.name}: ${discovery.formatSizeInfo(model.downloadGB)}`);
+                        });
+                    }
+                }
+                else {
+                    console.log(`  Need to download: ${sizeInfo.missingCount} models (sizes unknown)`);
+                }
             }
         }
         console.log();

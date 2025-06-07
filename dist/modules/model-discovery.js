@@ -21,6 +21,8 @@ export class ModelDiscovery {
         { name: 'llava:13b', description: 'LLaVA 13B - Large vision model', family: 'llava', parameterSize: '13B', minRAM: 16, category: 'vision', popularity: 83, downloadSizeGB: 8.0, diskSizeGB: 8.0 },
         // Small/efficient models
         { name: 'gemma:2b', description: 'Google Gemma 2B - Very efficient', family: 'gemma', parameterSize: '2B', minRAM: 4, category: 'chat', popularity: 78, downloadSizeGB: 1.4, diskSizeGB: 1.4 },
+        { name: 'gemma3:4b', description: 'Google Gemma 3 4B - Latest Gemma model', family: 'gemma3', parameterSize: '4B', minRAM: 4, category: 'chat', popularity: 82, downloadSizeGB: 3.3, diskSizeGB: 3.3 },
+        { name: 'qwen3:latest', description: 'Qwen 3 Latest - Advanced Chinese and English model', family: 'qwen3', parameterSize: '8B', minRAM: 8, category: 'chat', popularity: 85, downloadSizeGB: 5.2, diskSizeGB: 5.2 },
         { name: 'phi:2.7b', description: 'Microsoft Phi 2.7B - Compact model', family: 'phi', parameterSize: '2.7B', minRAM: 4, category: 'chat', popularity: 75, downloadSizeGB: 1.6, diskSizeGB: 1.6 },
     ];
     async getInstalledModels() {
@@ -81,12 +83,8 @@ export class ModelDiscovery {
     }
     async checkModelExists(modelName) {
         try {
-            const response = await fetch(`${this.baseUrl}/api/show`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: modelName }),
-            });
-            return response.ok;
+            const installedModels = await this.getInstalledModels();
+            return installedModels.some(model => model.name === modelName);
         }
         catch {
             return false;
@@ -189,22 +187,28 @@ export class ModelDiscovery {
         const breakdown = [];
         let installedCount = 0;
         let missingCount = 0;
+        // Get currently installed models for size information
+        const installedModels = await this.getInstalledModels();
+        const installedModelMap = new Map(installedModels.map(m => [m.name, m]));
         // Check each model's installation status
         for (const name of modelNames) {
-            const isInstalled = await this.checkModelExists(name);
-            const sizeInfo = this.getModelDownloadSize(name);
-            if (sizeInfo) {
-                if (isInstalled) {
-                    installedCount++;
-                    breakdown.push({
-                        name,
-                        downloadGB: 0, // No download needed
-                        diskGB: sizeInfo.diskGB,
-                        isInstalled: true
-                    });
-                }
-                else {
-                    missingCount++;
+            const installedModel = installedModelMap.get(name);
+            const isInstalled = installedModel !== undefined;
+            if (isInstalled && installedModel) {
+                installedCount++;
+                breakdown.push({
+                    name,
+                    downloadGB: 0, // No download needed
+                    diskGB: installedModel.sizeGB,
+                    actualSizeGB: installedModel.sizeGB,
+                    isInstalled: true
+                });
+            }
+            else {
+                missingCount++;
+                // Try to get size from our database for estimation
+                const sizeInfo = this.getModelDownloadSize(name);
+                if (sizeInfo) {
                     totalDownloadGB += sizeInfo.downloadGB;
                     totalDiskGB += sizeInfo.diskGB;
                     breakdown.push({
@@ -214,19 +218,50 @@ export class ModelDiscovery {
                         isInstalled: false
                     });
                 }
-            }
-            else {
-                // Model not in our database, assume it needs to be downloaded
-                missingCount++;
-                breakdown.push({
-                    name,
-                    downloadGB: 0, // Unknown size
-                    diskGB: 0,
-                    isInstalled: false
-                });
+                else {
+                    // Model not in our database - use heuristic based on name
+                    const estimatedSize = this.estimateModelSize(name);
+                    if (estimatedSize > 0) {
+                        totalDownloadGB += estimatedSize;
+                        totalDiskGB += estimatedSize;
+                        breakdown.push({
+                            name,
+                            downloadGB: estimatedSize,
+                            diskGB: estimatedSize,
+                            isInstalled: false
+                        });
+                    }
+                    else {
+                        breakdown.push({
+                            name,
+                            downloadGB: 0, // Unknown size
+                            diskGB: 0,
+                            isInstalled: false
+                        });
+                    }
+                }
             }
         }
         return { totalDownloadGB, totalDiskGB, breakdown, installedCount, missingCount };
+    }
+    // Estimate model size based on name patterns (fallback when not in database)
+    estimateModelSize(modelName) {
+        const name = modelName.toLowerCase();
+        // Extract parameter size from model name
+        if (name.includes('70b') || name.includes('72b'))
+            return 40.0;
+        if (name.includes('30b') || name.includes('32b') || name.includes('34b'))
+            return 20.0;
+        if (name.includes('13b') || name.includes('14b') || name.includes('15b'))
+            return 8.0;
+        if (name.includes('7b') || name.includes('8b') || name.includes('9b'))
+            return 4.5;
+        if (name.includes('3b') || name.includes('4b'))
+            return 2.5;
+        if (name.includes('1b') || name.includes('2b'))
+            return 1.5;
+        // Default estimate for unknown models
+        return 4.0;
     }
 }
 //# sourceMappingURL=model-discovery.js.map

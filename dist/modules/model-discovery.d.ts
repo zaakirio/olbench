@@ -76,10 +76,12 @@ export declare class ModelDiscovery {
             name: string;
             downloadGB: number;
             diskGB: number;
+            actualSizeGB?: number;
             isInstalled: boolean;
         }>;
         installedCount: number;
         missingCount: number;
     }>;
+    private estimateModelSize;
 }
 //# sourceMappingURL=model-discovery.d.ts.map

@@ -6,18 +6,18 @@
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Automatically detects your system capabilities, recommends optimal models, and provides detailed performance benchmarks for Ollama local LLMs.
+Automatically detects your system capabilities, discovers installed models, and provides detailed performance benchmarks for Ollama local LLMs with smart download size estimation.
 
 ## ✨ Features
 
 - 🖥️ **Smart System Detection** - Automatically detects RAM, GPUs, and OS
 - 🎯 **Intelligent Model Recommendations** - RAM-based tier system (4-64GB+)
 - 📊 **Comprehensive Benchmarking** - Tokens/sec, latency, memory, quality metrics
-- 🔍 **Model Discovery** - 16+ popular models across chat, code, vision, reasoning
+- 🔍 **Auto-Model Discovery** - Detects installed models, estimates download sizes
 - 📁 **Multiple Output Formats** - JSON, CSV, Markdown, HTML reports
 - ⚙️ **Flexible Configuration** - YAML config files with CLI overrides
 - 🎨 **Beautiful CLI** - Colored output with progress indicators
-- 📏 **Download Size Tracking** - Know bandwidth/storage requirements
+- 📏 **Smart Size Tracking** - Real sizes for installed, estimates for missing models
 
 ## 🚀 Quick Start
 
@@ -90,21 +90,83 @@ olbench config --show                    # Show current config
 
 ## 📊 Example Output
 
+### System Information
 ```
 🚀 olbench - Ollama Benchmark Tool
 
 🖥️  System Information
 • Operating System: macOS (arm64)
-• Total RAM: 16GB
+• Total RAM: 24GB
 • RAM Tier: Tier 3 (Performance Tier)
-• Ollama: ✅ Running (v0.1.17)
+• Ollama: ✅ Running (v0.9.0)
 
-📊 Recommendations for 16GB RAM:
+📊 Recommendations for 24GB RAM:
 💡 Recommended to Install:
 • llama3.1:8b - Meta Llama 3.1 8B | Download: 4.7GB
 • deepseek-coder:6.7b - DeepSeek Coder 6.7B | Download: 3.8GB
 • gemma2:9b - Google Gemma 2 9B | Download: 5.4GB
 ```
+
+### Smart Model Detection
+```
+✅ Configuration loaded
+  Models to test: gemma3:4b, llama3.1:8b, mistral:7b
+  Iterations: 5
+  Prompts: 1
+  Already installed: 1 models
+    • gemma3:4b: 3.1GB
+  Need to download: 2 models (8.8GB)
+    • llama3.1:8b: 4.7GB
+    • mistral:7b: 4.1GB
+```
+
+### Benchmark Results
+```
+🎉 Benchmark completed successfully!
+
+Summary:
+• Models tested: 3
+• Total benchmarks: 15
+• Duration: 87.3s
+• Fastest model: gemma3:4b
+• Average speed: 31.2 tokens/sec
+
+Detailed Results:
+Model               Tokens/sec  First Token Total Time  Memory    Quality
+--------------------------------------------------------------------------------
+gemma3:4b           35.2        28ms        7234ms      3.1GB     98.5
+llama3.1:8b         29.1        45ms        8912ms      4.7GB     99.2
+mistral:7b          28.9        38ms        9156ms      4.1GB     97.8
+```
+
+## 🤖 Auto-Detection Features
+
+olbench intelligently detects your system and models to provide accurate information:
+
+### 📦 Model Detection
+- **Scans installed models** via Ollama API (`/api/tags`)
+- **Shows real file sizes** for installed models
+- **Estimates download sizes** for missing models using:
+  - Database lookup for popular models
+  - Pattern-based estimation (e.g., `gemma3:4b` → ~2.5GB)
+  - Smart fallbacks for unknown models
+
+### 💾 Size Reporting
+```bash
+# Shows only what you actually need to download
+olbench run --models "installed:model,missing:model" --verbose
+
+# Output:
+  Already installed: 1 models
+    • installed:model: 3.1GB
+  Need to download: 1 models (4.7GB)
+    • missing:model: 4.7GB
+```
+
+### 🎯 Benefits
+- **No manual database maintenance** - works with any Ollama model
+- **Accurate resource planning** - know exactly what bandwidth/storage you need
+- **Works offline** - once models are installed, no internet required for detection
 
 ## ⚙️ Configuration
 
@@ -191,12 +253,16 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 📈 Roadmap
 
+- [x] ~~Auto-detection of installed models~~ ✅ **Completed**
+- [x] ~~Smart download size estimation~~ ✅ **Completed**
 - [ ] Automated testing suite
 - [ ] Performance regression detection
 - [ ] React/Ink UI (when compatibility improves)
 - [ ] Plugin system for extensions
 - [ ] Cloud model comparison
 - [ ] Real-time monitoring dashboard
+- [ ] Model performance history tracking
+- [ ] Batch model comparison reports
 
 ---
 

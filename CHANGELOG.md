@@ -22,6 +22,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Auto-detection of installed Ollama models via API
+- Smart download size estimation using real file sizes for installed models
+- Pattern-based size estimation for unknown models (e.g., `gemma3:4b` → ~2.5GB)
+- Detailed verbose output showing installed vs missing models
+- Enhanced CLI output with accurate download requirements
+
+### Fixed
+- Bug where download estimates were shown for already installed models
+- Improved model detection reliability using `/api/tags` endpoint
+
+### Changed
+- Model discovery now dynamically detects installed models instead of relying on static database
+- Size reporting shows actual disk usage for installed models
+- Download estimates only shown for models that actually need downloading
+
 ## [1.0.0] - 2025-01-07
 
 ### Added
