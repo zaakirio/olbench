@@ -19,15 +19,31 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
+    "openrouter",
     "ollama",
-    "benchmark",
+    "benchmarks",
+    "local-dev",
+    "local",
+    "benchmarking",
+    "ai-benchmarking",
+    "ai",
+    "cli",
+    "chat",
     "llm",
-    "performance",
-    "testing",
-    "local-ai"
+    "gpt",
+    "claude",
+    "anthropic",
+    "openai",
+    "chatbot",
+    "command-line",
+    "terminal"
   ],
-  "author": "Ollama Benchmark Team",
+  "author": "zaakirio",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zaakirio/olbench.git"
+  },
   "engines": {
     "node": ">=22.0.0"
   },
