@@ -92,7 +92,7 @@ program
     .option('-w, --warmup <number>', 'Number of warmup iterations', parseInt)
     .action(async (options) => {
     try {
-        console.log(chalk.blue.bold('🚀 Running Ollama Benchmark\\n'));
+        console.log(chalk.blue.bold('🚀 Running Ollama Benchmark\n'));
         // System detection
         console.log(chalk.yellow('📊 Detecting system configuration...'));
         const detector = new SystemDetector();
@@ -114,7 +114,11 @@ program
             models: options.models ? options.models.split(',').map((m) => m.trim()) : undefined,
             prompts: options.prompts ? [options.prompts] : undefined,
         };
+        // Debug logging
+        console.log(chalk.gray(`  🐛 CLI models arg: ${options.models}`));
+        console.log(chalk.gray(`  🐛 Parsed models: ${JSON.stringify(cliOptions.models)}`));
         const benchmarkConfig = configManager.applyCommandLineOverrides(cliOptions);
+        console.log(chalk.gray(`  🐛 Config models: ${JSON.stringify(benchmarkConfig.models)}`));
         // Determine models to test
         let modelsToTest = benchmarkConfig.models;
         if (!modelsToTest || modelsToTest.length === 0) {
@@ -182,13 +186,21 @@ program
         console.log();
         const runner = new BenchmarkRunner();
         benchmarkConfig.models = modelsToTest;
+        console.log(chalk.cyan('🔧 Initializing benchmark runner...'));
+        console.log(chalk.gray(`  Configuration: ${benchmarkConfig.iterations} iterations, ${benchmarkConfig.prompts.length} prompts`));
         const startTime = new Date();
+        // Add progress logging
+        console.log(chalk.cyan('⚡ Starting benchmark execution...'));
+        if (options.verbose) {
+            console.log(chalk.gray(`  Models: ${modelsToTest.join(', ')}`));
+            console.log(chalk.gray(`  Started at: ${startTime.toLocaleTimeString()}`));
+        }
         const modelResults = await runner.runBenchmark(benchmarkConfig);
         // Process results
         console.log(chalk.yellow('📊 Processing results...'));
         const processor = new ResultsProcessor();
         const report = processor.processBenchmarkResults(modelResults, systemInfo, startTime, benchmarkConfig);
-        console.log(chalk.green.bold('🎉 Benchmark completed successfully!\\n'));
+        console.log(chalk.green.bold('🎉 Benchmark completed successfully!\n'));
         // Display summary
         console.log(chalk.blue.bold('Summary:'));
         console.log(`• Models tested: ${report.summary.totalModels}`);

@@ -103,7 +103,7 @@ program
   .option('-w, --warmup <number>', 'Number of warmup iterations', parseInt)
   .action(async (options) => {
     try {
-      console.log(chalk.blue.bold('🚀 Running Ollama Benchmark\\n'));
+      console.log(chalk.blue.bold('🚀 Running Ollama Benchmark\n'));
 
       // System detection
       console.log(chalk.yellow('📊 Detecting system configuration...'));
@@ -206,7 +206,18 @@ program
       const runner = new BenchmarkRunner();
       benchmarkConfig.models = modelsToTest;
 
+      console.log(chalk.cyan('🔧 Initializing benchmark runner...'));
+      console.log(chalk.gray(`  Configuration: ${benchmarkConfig.iterations} iterations, ${benchmarkConfig.prompts.length} prompts`));
+      
       const startTime = new Date();
+      
+      // Add progress logging
+      console.log(chalk.cyan('⚡ Starting benchmark execution...'));
+      if (options.verbose) {
+        console.log(chalk.gray(`  Models: ${modelsToTest.join(', ')}`));
+        console.log(chalk.gray(`  Started at: ${startTime.toLocaleTimeString()}`));
+      }
+      
       const modelResults = await runner.runBenchmark(benchmarkConfig);
 
       // Process results
@@ -214,7 +225,7 @@ program
       const processor = new ResultsProcessor();
       const report = processor.processBenchmarkResults(modelResults, systemInfo, startTime, benchmarkConfig);
 
-      console.log(chalk.green.bold('🎉 Benchmark completed successfully!\\n'));
+      console.log(chalk.green.bold('🎉 Benchmark completed successfully!\n'));
 
       // Display summary
       console.log(chalk.blue.bold('Summary:'));

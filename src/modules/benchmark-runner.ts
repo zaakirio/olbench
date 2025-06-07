@@ -63,41 +63,61 @@ export class BenchmarkRunner {
   async runBenchmark(config: BenchmarkConfig): Promise<ModelBenchmarkResult[]> {
     const results: ModelBenchmarkResult[] = [];
 
-    for (const model of config.models) {
+    for (let modelIndex = 0; modelIndex < config.models.length; modelIndex++) {
+      const model = config.models[modelIndex];
+      console.log(`\n📋 [${modelIndex + 1}/${config.models.length}] Testing model: ${model}`);
+      
       // Pull model if not available
+      console.log(`  🔍 Checking model availability...`);
       await this.ensureModel(model);
 
       const modelMetrics: BenchmarkMetrics[] = [];
 
       // Warmup iterations
       if (config.warmupIterations && config.warmupIterations > 0) {
+        console.log(`  🔥 Running ${config.warmupIterations} warmup iterations...`);
         for (let i = 0; i < config.warmupIterations; i++) {
+          process.stdout.write(`    Warmup ${i + 1}/${config.warmupIterations}... `);
           await this.runSingleBenchmark(
             model,
             config.prompts[0],
             0,
             config.timeout
           );
+          console.log('✅');
         }
       }
 
       // Actual benchmark iterations
+      console.log(`  ⚡ Running ${config.iterations} benchmark iterations...`);
+      const totalRuns = config.iterations * config.prompts.length;
+      let currentRun = 0;
+      
       for (let iteration = 0; iteration < config.iterations; iteration++) {
         for (const prompt of config.prompts) {
+          currentRun++;
+          process.stdout.write(`    Run ${currentRun}/${totalRuns} (iteration ${iteration + 1}, prompt ${config.prompts.indexOf(prompt) + 1})... `);
+          
           const metrics = await this.runSingleBenchmark(
             model,
             prompt,
             iteration,
             config.timeout
           );
+          
           if (metrics) {
+            console.log(`✅ ${metrics.tokensPerSecond.toFixed(1)} tokens/sec`);
             modelMetrics.push(metrics);
+          } else {
+            console.log(`❌ Failed`);
           }
         }
       }
 
       if (modelMetrics.length > 0) {
-        results.push(this.calculateAggregateMetrics(model, modelMetrics));
+        const aggregateResult = this.calculateAggregateMetrics(model, modelMetrics);
+        results.push(aggregateResult);
+        console.log(`  📊 ${model} completed: ${aggregateResult.averageTokensPerSecond.toFixed(1)} avg tokens/sec`);
       }
     }
 
@@ -106,6 +126,8 @@ export class BenchmarkRunner {
 
   private async ensureModel(model: string): Promise<void> {
     try {
+      console.log(`    • Checking if ${model} is available...`);
+      
       // Check if model exists
       const response = await fetch(`${this.baseUrl}/api/show`, {
         method: 'POST',
@@ -113,16 +135,21 @@ export class BenchmarkRunner {
         body: JSON.stringify({ name: model }),
       });
 
-      if (!response.ok) {
-        // Model doesn't exist, pull it
-        await this.pullModel(model);
+      if (response.ok) {
+        console.log(`    • ✅ ${model} is already installed`);
+      } else {
+        console.log(`    • ❌ ${model} is not installed`);
+        throw new Error(`Model '${model}' is not installed. Please install it first with: ollama pull ${model}`);
       }
     } catch (error) {
+      console.log(`    • ❌ Error checking ${model}: ${error}`);
       throw new Error(`Failed to ensure model ${model}: ${error}`);
     }
   }
 
   private async pullModel(model: string): Promise<void> {
+    console.log(`      🔄 Starting download of ${model}...`);
+    
     const response = await fetch(`${this.baseUrl}/api/pull`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -133,7 +160,9 @@ export class BenchmarkRunner {
       throw new Error(`Failed to pull model ${model}: ${response.statusText}`);
     }
 
+    console.log(`      ⏳ Downloading ${model}... (this may take several minutes)`);
     await response.json();
+    console.log(`      ✅ Download of ${model} completed`);
   }
 
   private async runSingleBenchmark(
