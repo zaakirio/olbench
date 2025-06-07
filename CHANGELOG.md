@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/zaakirio/olbench/compare/v1.1.0...v1.2.0) (2025-06-07)
+
+
+### Features
+
+* **auto-detect:** Added auto-detection of installed models instead of manual db ([6a20822](https://github.com/zaakirio/olbench/commit/6a20822956775ada157eb4acbaf1c4d48c6b01fd))
+
 # [1.1.0](https://github.com/zaakirio/olbench/compare/v1.0.0...v1.1.0) (2025-06-07)
 
 
