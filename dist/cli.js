@@ -15,7 +15,7 @@ program
     .option('-c, --config <path>', 'Path to configuration file')
     .option('-t, --tier <number>', 'Specific RAM tier to test (1-4)', parseInt)
     .option('-o, --output <path>', 'Output file path')
-    .option('-f, --format <format>', 'Output format (json, csv, markdown)', 'json')
+    .option('-f, --format <format>', 'Output format (json, csv, markdown, html)', 'json')
     .option('-i, --iterations <number>', 'Number of benchmark iterations', parseInt)
     .option('--concurrency <number>', 'Number of concurrent requests', parseInt)
     .option('--timeout <seconds>', 'Timeout per request in seconds', parseInt)
@@ -54,6 +54,18 @@ program
     render(React.createElement(OllamaBenchmarkApp, { command: "info", options: options }));
 });
 program
+    .command('discover')
+    .description('Discover and manage available models')
+    .option('-c, --category <type>', 'Filter by category (chat, code, vision, reasoning)')
+    .option('-s, --search <query>', 'Search models by name or description')
+    .option('--trending', 'Show trending models')
+    .option('--pull <model>', 'Pull a specific model')
+    .option('--installed', 'Show only installed models')
+    .option('--size <models>', 'Show download size for specific models (comma-separated)')
+    .action((options) => {
+    render(React.createElement(OllamaBenchmarkApp, { command: "discover", options: options }));
+});
+program
     .command('config')
     .description('Configuration management')
     .option('-g, --generate <path>', 'Generate sample configuration file')
@@ -75,6 +87,12 @@ process.on('unhandledRejection', (reason, promise) => {
 program.parse();
 // If no command provided, show help
 if (!process.argv.slice(2).length) {
+    console.log('🚀 olbench - Ollama Benchmark Tool\n');
+    console.log('Quick Start:');
+    console.log('• olbench info - Check your system');
+    console.log('• olbench discover - Find models to test');
+    console.log('• olbench run - Run benchmarks');
+    console.log();
     program.outputHelp();
 }
 //# sourceMappingURL=cli.js.map

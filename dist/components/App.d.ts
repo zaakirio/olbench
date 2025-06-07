@@ -16,9 +16,15 @@ export interface AppOptions {
     generate?: string;
     validate?: string;
     show?: boolean;
+    category?: string;
+    search?: string;
+    trending?: boolean;
+    pull?: string;
+    installed?: boolean;
+    size?: string;
 }
 interface Props {
-    command: 'run' | 'compare' | 'interactive' | 'info' | 'config';
+    command: 'run' | 'compare' | 'interactive' | 'info' | 'config' | 'discover';
     options: AppOptions;
 }
 export declare const OllamaBenchmarkApp: React.FC<Props>;

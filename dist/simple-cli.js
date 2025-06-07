@@ -114,11 +114,7 @@ program
             models: options.models ? options.models.split(',').map((m) => m.trim()) : undefined,
             prompts: options.prompts ? [options.prompts] : undefined,
         };
-        // Debug logging
-        console.log(chalk.gray(`  🐛 CLI models arg: ${options.models}`));
-        console.log(chalk.gray(`  🐛 Parsed models: ${JSON.stringify(cliOptions.models)}`));
         const benchmarkConfig = configManager.applyCommandLineOverrides(cliOptions);
-        console.log(chalk.gray(`  🐛 Config models: ${JSON.stringify(benchmarkConfig.models)}`));
         // Determine models to test
         let modelsToTest = benchmarkConfig.models;
         if (!modelsToTest || modelsToTest.length === 0) {

@@ -5,6 +5,7 @@ import { SystemInfo } from './SystemInfo.js';
 import { InteractiveMode } from './InteractiveMode.js';
 import { CompareResults } from './CompareResults.js';
 import { ConfigManager } from './ConfigManager.js';
+import { ModelDiscovery } from './ModelDiscovery.js';
 
 export interface AppOptions {
   models?: string[];
@@ -23,10 +24,16 @@ export interface AppOptions {
   generate?: string;
   validate?: string;
   show?: boolean;
+  category?: string;
+  search?: string;
+  trending?: boolean;
+  pull?: string;
+  installed?: boolean;
+  size?: string;
 }
 
 interface Props {
-  command: 'run' | 'compare' | 'interactive' | 'info' | 'config';
+  command: 'run' | 'compare' | 'interactive' | 'info' | 'config' | 'discover';
   options: AppOptions;
 }
 
@@ -76,6 +83,9 @@ export const OllamaBenchmarkApp: React.FC<Props> = ({ command, options }) => {
     
     case 'config':
       return <ConfigManager options={options} />;
+    
+    case 'discover':
+      return <ModelDiscovery options={options} />;
     
     default:
       return (

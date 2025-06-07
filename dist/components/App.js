@@ -5,6 +5,7 @@ import { SystemInfo } from './SystemInfo.js';
 import { InteractiveMode } from './InteractiveMode.js';
 import { CompareResults } from './CompareResults.js';
 import { ConfigManager } from './ConfigManager.js';
+import { ModelDiscovery } from './ModelDiscovery.js';
 export const OllamaBenchmarkApp = ({ command, options }) => {
     const [error, setError] = useState(null);
     useEffect(() => {
@@ -37,6 +38,8 @@ export const OllamaBenchmarkApp = ({ command, options }) => {
             return React.createElement(SystemInfo, { verbose: options.verbose || false });
         case 'config':
             return React.createElement(ConfigManager, { options: options });
+        case 'discover':
+            return React.createElement(ModelDiscovery, { options: options });
         default:
             return (React.createElement(Box, { flexDirection: "column", padding: 1 },
                 React.createElement(Text, { color: "red" },
