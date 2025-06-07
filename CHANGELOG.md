@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/zaakirio/olbench/compare/v1.0.0...v1.1.0) (2025-06-07)
+
+
+### Features
+
+* **modules:** Adjusted modules to check for local model before download ([cb8e0e2](https://github.com/zaakirio/olbench/commit/cb8e0e2cbd2deea35390689559e92b13d6f0236e))
+
 # 1.0.0 (2025-06-07)
 
 
