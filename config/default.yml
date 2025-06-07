@@ -1,0 +1,108 @@
+version: "1.0.0"
+
+benchmark:
+  timeout: 300          # seconds
+  iterations: 5         # number of benchmark runs per model
+  concurrency: 1        # concurrent requests
+  warmupIterations: 2   # warmup runs before actual benchmarks
+
+ramTiers:
+  tier1:
+    minRam: 4
+    maxRam: 7
+    models:
+      - name: "deepseek-r1:1.5b"
+        priority: 1
+      - name: "gemma:2b"
+        priority: 2
+      - name: "phi:2.7b"
+        priority: 3
+      - name: "phi3:3.8b"
+        priority: 4
+
+  tier2:
+    minRam: 8
+    maxRam: 15
+    models:
+      - name: "phi3:3.8b"
+        priority: 1
+      - name: "gemma2:9b"
+        priority: 2
+      - name: "mistral:7b"
+        priority: 3
+      - name: "llama3.1:8b"
+        priority: 4
+      - name: "deepseek-r1:8b"
+        priority: 5
+      - name: "llava:7b"
+        priority: 6
+
+  tier3:
+    minRam: 16
+    maxRam: 31
+    models:
+      - name: "gemma2:9b"
+        priority: 1
+      - name: "mistral:7b"
+        priority: 2
+      - name: "phi4:14b"
+        priority: 3
+      - name: "deepseek-r1:8b"
+        priority: 4
+      - name: "deepseek-r1:14b"
+        priority: 5
+      - name: "llava:7b"
+        priority: 6
+      - name: "llava:13b"
+        priority: 7
+
+  tier4:
+    minRam: 32
+    maxRam: .inf
+    models:
+      - name: "phi4:14b"
+        priority: 1
+      - name: "deepseek-r1:14b"
+        priority: 2
+      - name: "deepseek-r1:32b"
+        priority: 3
+
+prompts:
+  default:
+    - "Explain quantum computing in simple terms."
+    - "Write a short story about a robot discovering emotions."
+    - "Solve this math problem: What is 15% of 240?"
+    - "Create a Python function to calculate the Fibonacci sequence."
+    - "Describe the process of photosynthesis in detail."
+
+  coding:
+    - "Write a function to reverse a string in Python."
+    - "Implement a binary search algorithm in JavaScript."
+    - "Create a REST API endpoint using Express.js."
+    - "Write a recursive function to calculate factorial."
+    - "Implement a simple linked list in C++."
+
+  creative:
+    - "Write a haiku about artificial intelligence."
+    - "Create a dialogue between two characters meeting for the first time."
+    - "Describe a futuristic city in 100 words."
+    - "Write a product description for an innovative gadget."
+    - "Create a short poem about the changing seasons."
+
+  reasoning:
+    - "If a train travels 60mph for 2.5 hours, how far does it go?"
+    - "What are the ethical implications of autonomous vehicles?"
+    - "Compare the advantages and disadvantages of renewable energy."
+    - "Explain the logical fallacy in: 'All birds can fly, penguins are birds, therefore penguins can fly.'"
+    - "How would you prioritize tasks when everything seems urgent?"
+
+output:
+  formats: ["json", "csv", "markdown"]
+  includeSystemInfo: true
+  saveRawResponses: false
+  directory: "./benchmark-results"
+
+ollama:
+  baseUrl: "http://localhost:11434"
+  timeout: 300
+  retries: 3
