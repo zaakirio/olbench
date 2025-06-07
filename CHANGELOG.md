@@ -1,3 +1,11 @@
+# [1.4.0](https://github.com/zaakirio/olbench/compare/v1.3.0...v1.4.0) (2025-06-07)
+
+
+### Features
+
+* **cli-improvements:** Updated cli styling and best model rec ([0ac0c59](https://github.com/zaakirio/olbench/commit/0ac0c59e8a124c8af3a83018c74337aef53c3bac))
+* **cli:** Adjusted model discovery ([4d99e38](https://github.com/zaakirio/olbench/commit/4d99e3821ac85b438976cc88fefe26de90af6c6a))
+
 # [1.3.0](https://github.com/zaakirio/olbench/compare/v1.2.0...v1.3.0) (2025-06-07)
 
 
