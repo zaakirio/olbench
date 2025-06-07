@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/zaakirio/olbench/compare/v1.2.0...v1.3.0) (2025-06-07)
+
+
+### Features
+
+* **local-fix:** Fixed bug with local models ([941b0f8](https://github.com/zaakirio/olbench/commit/941b0f8d562fbb24674be02a3b7bb97bb03d5ed9))
+
 # [1.2.0](https://github.com/zaakirio/olbench/compare/v1.1.0...v1.2.0) (2025-06-07)
 
 
