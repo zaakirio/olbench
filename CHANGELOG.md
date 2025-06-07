@@ -1,3 +1,11 @@
+# 1.0.0 (2025-06-07)
+
+
+### Features
+
+* **config:** Added config ([17e9812](https://github.com/zaakirio/olbench/commit/17e98126a50785c8b5e28a1b6afc57aa24e1fc69))
+* **docs:** Added documentation and workflows ([640dc25](https://github.com/zaakirio/olbench/commit/640dc25bc4a2e80fcd30e85d53e2333da7ba7207))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
