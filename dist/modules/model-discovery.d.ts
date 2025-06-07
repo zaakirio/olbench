@@ -69,5 +69,17 @@ export declare class ModelDiscovery {
             diskGB: number;
         }>;
     };
+    calculateDownloadSizeForMissingModels(modelNames: string[]): Promise<{
+        totalDownloadGB: number;
+        totalDiskGB: number;
+        breakdown: Array<{
+            name: string;
+            downloadGB: number;
+            diskGB: number;
+            isInstalled: boolean;
+        }>;
+        installedCount: number;
+        missingCount: number;
+    }>;
 }
 //# sourceMappingURL=model-discovery.d.ts.map

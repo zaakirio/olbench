@@ -251,4 +251,58 @@ export class ModelDiscovery {
 
     return { totalDownloadGB, totalDiskGB, breakdown };
   }
+
+  // Calculate download size only for models that aren't already installed
+  async calculateDownloadSizeForMissingModels(modelNames: string[]): Promise<{ 
+    totalDownloadGB: number; 
+    totalDiskGB: number; 
+    breakdown: Array<{name: string, downloadGB: number, diskGB: number, isInstalled: boolean}>;
+    installedCount: number;
+    missingCount: number;
+  }> {
+    let totalDownloadGB = 0;
+    let totalDiskGB = 0;
+    const breakdown: Array<{name: string, downloadGB: number, diskGB: number, isInstalled: boolean}> = [];
+    let installedCount = 0;
+    let missingCount = 0;
+
+    // Check each model's installation status
+    for (const name of modelNames) {
+      const isInstalled = await this.checkModelExists(name);
+      const sizeInfo = this.getModelDownloadSize(name);
+      
+      if (sizeInfo) {
+        if (isInstalled) {
+          installedCount++;
+          breakdown.push({
+            name,
+            downloadGB: 0, // No download needed
+            diskGB: sizeInfo.diskGB,
+            isInstalled: true
+          });
+        } else {
+          missingCount++;
+          totalDownloadGB += sizeInfo.downloadGB;
+          totalDiskGB += sizeInfo.diskGB;
+          breakdown.push({
+            name,
+            downloadGB: sizeInfo.downloadGB,
+            diskGB: sizeInfo.diskGB,
+            isInstalled: false
+          });
+        }
+      } else {
+        // Model not in our database, assume it needs to be downloaded
+        missingCount++;
+        breakdown.push({
+          name,
+          downloadGB: 0, // Unknown size
+          diskGB: 0,
+          isInstalled: false
+        });
+      }
+    }
+
+    return { totalDownloadGB, totalDiskGB, breakdown, installedCount, missingCount };
+  }
 }

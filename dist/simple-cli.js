@@ -145,12 +145,18 @@ program
         console.log(`  Models to test: ${Array.isArray(modelsToTest) ? modelsToTest.join(', ') : modelsToTest}`);
         console.log(`  Iterations: ${benchmarkConfig.iterations}`);
         console.log(`  Prompts: ${benchmarkConfig.prompts.length}`);
-        // Show download size estimation
+        // Show download size estimation for missing models only
         if (Array.isArray(modelsToTest)) {
             const discovery = new ModelDiscovery();
-            const sizeInfo = discovery.calculateTotalDownloadSize(modelsToTest);
-            if (sizeInfo.breakdown.length > 0) {
-                console.log(`  Estimated download: ${discovery.formatSizeInfo(sizeInfo.totalDownloadGB)}`);
+            const sizeInfo = await discovery.calculateDownloadSizeForMissingModels(modelsToTest);
+            if (sizeInfo.installedCount > 0) {
+                console.log(`  Already installed: ${sizeInfo.installedCount} models`);
+            }
+            if (sizeInfo.missingCount > 0 && sizeInfo.totalDownloadGB > 0) {
+                console.log(`  Need to download: ${sizeInfo.missingCount} models (${discovery.formatSizeInfo(sizeInfo.totalDownloadGB)})`);
+            }
+            else if (sizeInfo.missingCount > 0) {
+                console.log(`  Need to download: ${sizeInfo.missingCount} models (size unknown)`);
             }
         }
         console.log();
