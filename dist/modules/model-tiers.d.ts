@@ -4,6 +4,10 @@ export interface ModelConfig {
     description?: string;
     contextLength?: number;
     parameters?: string;
+    memoryRequirement: number;
+    gpuOptimized?: boolean;
+    cpuOptimized?: boolean;
+    quantization?: string;
 }
 export interface ModelTier {
     name: string;
@@ -20,6 +24,14 @@ export declare class ModelTierManager {
     getModelsForRAM(ramGB: number): ModelConfig[];
     getModelByName(modelName: string): ModelConfig | null;
     getRecommendedModels(ramGB: number, count?: number): ModelConfig[];
+    getHardwareAwareRecommendations(systemInfo: {
+        availableRAM: number;
+        totalRAM: number;
+        hasGPU: boolean;
+        hasCUDA: boolean;
+        architecture: string;
+        os: string;
+    }, count?: number): ModelConfig[];
     isModelAvailable(modelName: string, ramGB: number): boolean;
     getAllModels(): ModelConfig[];
     formatTierInfo(tier: ModelTier): string;
