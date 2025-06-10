@@ -68,7 +68,16 @@ export const BenchmarkRunner: React.FC<Props> = ({ options }) => {
             throw new Error(`Invalid tier: ${options.tier}`);
           }
         } else {
-          const recommendedModels = tierManager.getRecommendedModels(sysInfo.totalRAM);
+          // Use hardware-aware recommendations
+          const hwScore = detector.getHardwareScore(sysInfo);
+          const recommendedModels = tierManager.getHardwareAwareRecommendations({
+            availableRAM: sysInfo.availableRAM,
+            totalRAM: sysInfo.totalRAM,
+            hasGPU: hwScore.hasGPU,
+            hasCUDA: hwScore.hasCUDA,
+            architecture: sysInfo.architecture,
+            os: sysInfo.os,
+          });
           modelsToTest = recommendedModels.map(m => m.name);
         }
       }

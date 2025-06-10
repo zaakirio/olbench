@@ -25,12 +25,23 @@ program
         const tierManager = new ModelTierManager();
         const ramTier = detector.getRAMTier(systemInfo.totalRAM);
         const tier = tierManager.getAllTiers().find(t => t.priority === ramTier);
-        const recommendedModels = tierManager.getRecommendedModels(systemInfo.totalRAM);
+        // Get hardware score and hardware-aware recommendations
+        const hwScore = detector.getHardwareScore(systemInfo);
+        const recommendedModels = tierManager.getHardwareAwareRecommendations({
+            availableRAM: systemInfo.availableRAM,
+            totalRAM: systemInfo.totalRAM,
+            hasGPU: hwScore.hasGPU,
+            hasCUDA: hwScore.hasCUDA,
+            architecture: systemInfo.architecture,
+            os: systemInfo.os,
+        }, 5);
         console.log(chalk.cyan('Basic Information:'));
         console.log(`• Operating System: ${chalk.green(systemInfo.os)} (${systemInfo.architecture})`);
+        console.log(`• CPU: ${chalk.green(systemInfo.cpu.brand)} (${systemInfo.cpu.physicalCores} cores @ ${systemInfo.cpu.speed}GHz)`);
         console.log(`• Total RAM: ${chalk.green(systemInfo.totalRAM + 'GB')}`);
-        console.log(`• Available RAM: ${chalk.green(systemInfo.availableRAM + 'GB')}`);
+        console.log(`• Available RAM: ${chalk.green(systemInfo.availableRAM + 'GB')} (${hwScore.effectiveRAM}GB effective)`);
         console.log(`• RAM Tier: ${chalk.yellow('Tier ' + ramTier)} ${tier ? `(${tier.name})` : ''}`);
+        console.log(`• Hardware Score: ${chalk.yellow(hwScore.score.toFixed(1) + '/100')} (CPU: ${hwScore.cpuScore.toFixed(1)}, GPU: ${hwScore.gpuScore.toFixed(1)})`);
         console.log();
         console.log(chalk.cyan('Ollama Status:'));
         console.log(`• Status: ${systemInfo.ollamaAvailable ? chalk.green('✅ Running') : chalk.red('❌ Not detected')}`);
@@ -41,18 +52,40 @@ program
         if (systemInfo.gpus.length > 0) {
             console.log(chalk.cyan('Graphics Cards:'));
             systemInfo.gpus.forEach((gpu, index) => {
-                console.log(`• ${gpu.vendor} ${gpu.model}${gpu.vram > 0 ? chalk.green(` (${gpu.vram}MB VRAM)`) : ''}`);
+                let gpuInfo = `• ${gpu.vendor} ${gpu.model}`;
+                if (gpu.vram > 0) {
+                    gpuInfo += chalk.green(` (${gpu.vram}MB VRAM)`);
+                }
+                if (gpu.cudaAvailable) {
+                    gpuInfo += chalk.yellow(` [CUDA ${gpu.computeCapability}]`);
+                }
+                console.log(gpuInfo);
             });
             console.log();
         }
-        console.log(chalk.cyan('Recommended Models:'));
+        console.log(chalk.cyan('Hardware-Aware Recommendations:'));
         if (recommendedModels.length > 0) {
             recommendedModels.forEach((model, index) => {
-                console.log(`• ${chalk.blue(model.name)}${model.description ? chalk.gray(' - ' + model.description) : ''}`);
+                let modelInfo = `${index + 1}. ${chalk.blue(model.name)}`;
+                if (model.description) {
+                    modelInfo += chalk.gray(' - ' + model.description);
+                }
+                console.log(modelInfo);
+                let details = `   Memory: ${model.memoryRequirement}GB`;
+                if (model.gpuOptimized && model.cpuOptimized) {
+                    details += ' | 🎮🖥️  GPU+CPU optimized';
+                }
+                else if (model.gpuOptimized) {
+                    details += ' | 🎮 GPU optimized';
+                }
+                else if (model.cpuOptimized) {
+                    details += ' | 🖥️  CPU optimized';
+                }
+                console.log(chalk.gray(details));
             });
         }
         else {
-            console.log(chalk.red('• No recommended models for your RAM tier'));
+            console.log(chalk.red('• No recommended models for your system'));
         }
         console.log();
         if (options.verbose && tier) {
@@ -129,7 +162,16 @@ program
                 }
             }
             else {
-                const recommendedModels = tierManager.getRecommendedModels(systemInfo.totalRAM);
+                // Use hardware-aware recommendations
+                const hwScore = detector.getHardwareScore(systemInfo);
+                const recommendedModels = tierManager.getHardwareAwareRecommendations({
+                    availableRAM: systemInfo.availableRAM,
+                    totalRAM: systemInfo.totalRAM,
+                    hasGPU: hwScore.hasGPU,
+                    hasCUDA: hwScore.hasCUDA,
+                    architecture: systemInfo.architecture,
+                    os: systemInfo.os,
+                });
                 modelsToTest = recommendedModels.map(m => m.name);
             }
         }
