@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/zaakirio/olbench/compare/v1.4.0...v2.0.0) (2025-06-10)
+
+
+### Features
+
+* implement hardware-aware model recommendations ([74f57af](https://github.com/zaakirio/olbench/commit/74f57af698f1fe4fb61796bc8769d702b1690798))
+
+
+### BREAKING CHANGES
+
+* ModelConfig interface now requires memoryRequirement field
+
 # [1.4.0](https://github.com/zaakirio/olbench/compare/v1.3.0...v1.4.0) (2025-06-07)
 
 
