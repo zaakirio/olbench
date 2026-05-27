@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/zaakirio/olbench/compare/v2.0.0...v2.0.1) (2026-05-27)
+
+
+### Bug Fixes
+
+* publish cleaned README and metrics/reporting fixes from [#3](https://github.com/zaakirio/olbench/issues/3) ([5e15d81](https://github.com/zaakirio/olbench/commit/5e15d814e933f767ac100d4bc6709d4ce3aea90a))
+
 # [2.0.0](https://github.com/zaakirio/olbench/compare/v1.4.0...v2.0.0) (2025-06-10)
 
 
