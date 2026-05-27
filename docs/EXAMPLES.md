@@ -2,7 +2,7 @@
 
 Practical examples and use cases for the Ollama Benchmark Tool.
 
-## 🚀 Quick Start Examples
+## Quick Start Examples
 
 ### Basic System Check
 ```bash
@@ -15,7 +15,7 @@ olbench info --verbose
 
 Example Output:
 ```
-🖥️  System Information
+ System Information
 
 Basic Information:
 • Operating System: darwin (arm64)
@@ -24,7 +24,7 @@ Basic Information:
 • RAM Tier: Tier 3 (Tier 3 (16GB-31GB))
 
 Ollama Status:
-• Status: ✅ Running
+• Status: Running
 • Version: v0.9.0
 
 Recommended Models:
@@ -48,7 +48,7 @@ olbench discover --search llama
 olbench discover --trending
 ```
 
-## 📊 Benchmarking Examples
+## Benchmarking Examples
 
 ### Quick Performance Test
 ```bash
@@ -79,7 +79,7 @@ olbench run --models "deepseek-r1:8b" --prompts reasoning --output reasoning-tes
 olbench run --models "deepseek-r1:8b" --prompts default --output general-test.json
 ```
 
-## 🔧 Configuration Examples
+## Configuration Examples
 
 ### Custom Configuration File
 ```yaml
@@ -98,7 +98,7 @@ prompts:
     - "Create a React component for a todo list with TypeScript"
     - "Implement a binary search tree in Java with unit tests"
     - "Write a SQL query to find the top 10 customers by revenue"
-  
+
   custom_reasoning:
     - "A farmer has 17 sheep, all but 9 die. How many are left?"
     - "If you're in a race and pass the person in 2nd place, what place are you in?"
@@ -123,18 +123,18 @@ olbench config --generate dev-config.yml
 # Edit to set iterations: 2, timeout: 60
 
 # Production config (comprehensive)
-olbench config --generate prod-config.yml  
+olbench config --generate prod-config.yml
 # Edit to set iterations: 20, timeout: 600
 ```
 
-## 📈 Analysis Examples
+## Analysis Examples
 
 ### Performance Tracking Over Time
 ```bash
 # Week 1 baseline
 olbench run --output week1-baseline.json --iterations 10
 
-# Week 2 comparison  
+# Week 2 comparison
 olbench run --output week2-results.json --iterations 10
 
 # Compare results (future feature)
@@ -148,7 +148,7 @@ olbench discover --category chat
 
 # 2. Install promising models
 ollama pull llama3.1:8b
-ollama pull mistral:7b  
+ollama pull mistral:7b
 ollama pull gemma2:9b
 
 # 3. Quick comparison
@@ -158,7 +158,7 @@ olbench run --models "llama3.1:8b,mistral:7b,gemma2:9b" --iterations 3
 olbench run --models "mistral:7b" --iterations 10 --output final-choice.html --format html
 ```
 
-## 🎯 Use Case Examples
+## Use Case Examples
 
 ### Code Generation Evaluation
 ```bash
@@ -197,7 +197,7 @@ olbench run --models "mistral:7b" --concurrency 2 --output dual-thread.json
 olbench run --models "mistral:7b" --concurrency 4 --output quad-thread.json
 ```
 
-## 🔄 Automation Examples
+## Automation Examples
 
 ### Daily Performance Check
 Create a script `daily-check.sh`:
@@ -221,15 +221,15 @@ echo "Performance check complete. Results saved to daily-checks/performance-$DAT
 Create `install-recommended.sh`:
 ```bash
 #!/bin/bash
-echo "🔍 Discovering recommended models..."
+echo "Discovering recommended models..."
 olbench discover > recommended.txt
 
-echo "📥 Installing recommended models..."
+echo "Installing recommended models..."
 ollama pull llama3.1:8b
-ollama pull mistral:7b  
+ollama pull mistral:7b
 ollama pull gemma2:9b
 
-echo "🧪 Running benchmark on new models..."
+echo "Running benchmark on new models..."
 olbench run --models "llama3.1:8b,mistral:7b,gemma2:9b" --output new-models-benchmark.html
 ```
 
@@ -241,7 +241,7 @@ const fs = require('fs');
 
 async function checkPerformance() {
   return new Promise((resolve, reject) => {
-    exec('olbench run --models "mistral:7b" --iterations 1 --format json', 
+    exec('olbench run --models "mistral:7b" --iterations 1 --format json',
       (error, stdout, stderr) => {
         if (error) reject(error);
         else resolve(stdout);
@@ -254,16 +254,16 @@ async function monitor() {
     const result = await checkPerformance();
     const data = JSON.parse(result);
     const performance = data.results[0].tokensPerSecond;
-    
+
     console.log(`${new Date().toISOString()}: ${performance.toFixed(1)} tok/s`);
-    
+
     // Log to file
-    fs.appendFileSync('performance.log', 
+    fs.appendFileSync('performance.log',
       `${new Date().toISOString()},${performance}\n`);
-    
+
     // Alert if performance drops
     if (performance < 20) {
-      console.warn('⚠️ Performance degradation detected!');
+      console.warn('Performance degradation detected!');
     }
   } catch (error) {
     console.error('Monitoring failed:', error);
@@ -275,12 +275,12 @@ setInterval(monitor, 5 * 60 * 1000);
 console.log('Performance monitoring started...');
 ```
 
-## 📊 Report Examples
+## Report Examples
 
 ### HTML Report Features
 When using `--format html`, reports include:
 - Interactive performance charts
-- System information cards  
+- System information cards
 - Model comparison tables
 - Responsive design for mobile viewing
 - Export capabilities
@@ -310,7 +310,7 @@ Perfect for:
 - GitHub README files
 - Technical reports
 
-## 🚨 Troubleshooting Examples
+## Troubleshooting Examples
 
 ### Debugging Low Performance
 ```bash
@@ -349,14 +349,14 @@ olbench discover --search 2b
 olbench run --concurrency 1
 ```
 
-## 🎨 Custom Prompt Examples
+## Custom Prompt Examples
 
 ### Creative Writing Prompts
 ```yaml
 prompts:
   creative:
     - "Write a haiku about artificial intelligence discovering poetry"
-    - "Create a short story where a debugging tool gains consciousness" 
+    - "Create a short story where a debugging tool gains consciousness"
     - "Compose a dialogue between two AI models comparing their architectures"
     - "Write a product description for a time machine designed by engineers"
 ```
@@ -381,7 +381,7 @@ prompts:
     - "If you flip a fair coin 10 times, what's the probability of getting exactly 7 heads?"
 ```
 
-## 🔮 Advanced Examples
+## Advanced Examples
 
 ### Multi-Language Code Generation
 ```bash
@@ -392,7 +392,7 @@ olbench run --models "deepseek-coder:6.7b" --prompts coding --output python-focu
 # prompts-languages.yml:
 # multilang:
 #   - "Write a binary search function in Python"
-#   - "Write a binary search function in JavaScript" 
+#   - "Write a binary search function in JavaScript"
 #   - "Write a binary search function in Java"
 #   - "Write a binary search function in Rust"
 ```
@@ -402,7 +402,7 @@ olbench run --models "deepseek-coder:6.7b" --prompts coding --output python-focu
 # Baseline before updates
 olbench run --tier 3 --output baseline-v1.json
 
-# After system/model updates  
+# After system/model updates
 olbench run --tier 3 --output current-v2.json
 
 # Compare (future feature)

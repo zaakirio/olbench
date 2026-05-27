@@ -2,23 +2,23 @@
 
 Complete API documentation for using the Ollama Benchmark Tool as a library or extending its functionality.
 
-## 📦 Installation as Library
+## Installation as Library
 
 ```bash
 npm install ollama-benchmark-node
 ```
 
 ```typescript
-import { 
-  SystemDetector, 
-  ModelDiscovery, 
+import {
+  SystemDetector,
+  ModelDiscovery,
   BenchmarkRunner,
   ResultsProcessor,
   ReportGenerator
 } from 'ollama-benchmark-node';
 ```
 
-## 🔧 Core APIs
+## Core APIs
 
 ### SystemDetector
 
@@ -467,7 +467,7 @@ interface ReportOptions {
 type OutputFormat = 'json' | 'csv' | 'markdown' | 'html';
 ```
 
-## 🔧 Configuration API
+## Configuration API
 
 ### ConfigManager
 
@@ -552,7 +552,7 @@ interface CommandLineOptions {
 }
 ```
 
-## 🔄 Event System (Future)
+## Event System (Future)
 
 Future versions will include an event system for monitoring:
 
@@ -573,56 +573,56 @@ runner.on('modelComplete', (result: ModelBenchmarkResult) => {
 });
 ```
 
-## 🚀 Example Use Cases
+## Example Use Cases
 
 ### Custom Benchmark Script
 
 ```typescript
-import { 
-  SystemDetector, 
-  ModelDiscovery, 
-  BenchmarkRunner, 
+import {
+  SystemDetector,
+  ModelDiscovery,
+  BenchmarkRunner,
   ResultsProcessor,
-  ReportGenerator 
+  ReportGenerator
 } from 'ollama-benchmark-node';
 
 async function customBenchmark() {
   // Detect system
   const detector = new SystemDetector();
   const systemInfo = await detector.detectSystem();
-  
+
   // Discover models
   const discovery = new ModelDiscovery();
   const recommendations = await discovery.getModelRecommendations(systemInfo.totalRAM);
-  
+
   // Select top 3 models
   const modelsToTest = recommendations.canInstall
     .slice(0, 3)
     .map(m => m.name);
-  
+
   // Run benchmark
   const runner = new BenchmarkRunner();
   const config = runner.createDefaultConfig(modelsToTest);
   config.iterations = 3;
-  
+
   const results = await runner.runBenchmark(config);
-  
+
   // Process results
   const processor = new ResultsProcessor();
   const report = processor.processBenchmarkResults(
-    results, 
-    systemInfo, 
-    new Date(), 
+    results,
+    systemInfo,
+    new Date(),
     config
   );
-  
+
   // Generate report
   const generator = new ReportGenerator();
   await generator.generateReport(report, {
     format: 'html',
     outputPath: 'custom-benchmark.html'
   });
-  
+
   console.log('Custom benchmark completed!');
 }
 
@@ -636,16 +636,16 @@ async function monitorModel(modelName: string) {
   const runner = new BenchmarkRunner();
   const config = runner.createDefaultConfig([modelName]);
   config.iterations = 1;
-  
+
   setInterval(async () => {
     const results = await runner.runBenchmark(config);
     const performance = results[0].averageTokensPerSecond;
-    
+
     console.log(`${modelName}: ${performance.toFixed(1)} tok/s`);
-    
+
     // Alert if performance drops
     if (performance < 20) {
-      console.warn('⚠️ Performance degradation detected!');
+      console.warn('Performance degradation detected!');
     }
   }, 60000); // Check every minute
 }
@@ -657,17 +657,17 @@ async function monitorModel(modelName: string) {
 async function compareModels(modelA: string, modelB: string) {
   const runner = new BenchmarkRunner();
   const config = runner.createDefaultConfig([modelA, modelB]);
-  
+
   const results = await runner.runBenchmark(config);
   const processor = new ResultsProcessor();
-  
+
   const [resultA, resultB] = results;
-  
+
   console.log(`${modelA}: ${resultA.averageTokensPerSecond.toFixed(1)} tok/s`);
   console.log(`${modelB}: ${resultB.averageTokensPerSecond.toFixed(1)} tok/s`);
-  
+
   const improvement = ((resultB.averageTokensPerSecond - resultA.averageTokensPerSecond) / resultA.averageTokensPerSecond) * 100;
-  
+
   console.log(`${modelB} is ${improvement.toFixed(1)}% ${improvement > 0 ? 'faster' : 'slower'} than ${modelA}`);
 }
 ```

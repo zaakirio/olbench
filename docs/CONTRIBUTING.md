@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing! This guide will help you get started with development and contributions.
 
-## 🚀 Quick Development Setup
+## Quick Development Setup
 
 ### Prerequisites
 - **Node.js 22+** (required for ESM support and native fetch)
@@ -29,7 +29,7 @@ npm run dev info
 olbench info
 ```
 
-## 🛠️ Development Workflow
+## Development Workflow
 
 ### Available Scripts
 - `npm run dev` - Run CLI with TypeScript hot reload
@@ -41,16 +41,16 @@ olbench info
 ### File Structure
 ```
 src/
-├── modules/           # Core business logic modules
-│   ├── system-detection.ts
-│   ├── model-discovery.ts
-│   ├── benchmark-runner.ts
-│   ├── results-processor.ts
-│   ├── config-manager.ts
-│   └── report-generator.ts
-├── components/        # React/Ink UI components (future)
-├── simple-cli.ts      # Working CLI implementation
-└── index.ts          # Library exports
+modules/           # Core business logic modules
+  system-detection.ts
+  model-discovery.ts
+  benchmark-runner.ts
+  results-processor.ts
+  config-manager.ts
+  report-generator.ts
+components/        # React/Ink UI components (future)
+simple-cli.ts      # Working CLI implementation
+index.ts          # Library exports
 
 docs/                 # Documentation
 config/              # Default configuration files
@@ -90,7 +90,7 @@ function calculateTokensPerSecond(tokens: number, durationMs: number): number {
 }
 ```
 
-## 🔧 Adding New Features
+## Adding New Features
 
 ### Adding a New Command
 1. **Add to CLI** - Update `src/simple-cli.ts`
@@ -140,7 +140,7 @@ type OutputFormat = 'json' | 'csv' | 'markdown' | 'html' | 'xml';
 3. **Test discovery** - Ensure accurate information
 4. **Update categories** - If adding new categories
 
-## 🧪 Testing Guidelines
+## Testing Guidelines
 
 ### Manual Testing Checklist
 Before submitting changes, test:
@@ -171,7 +171,7 @@ We plan to add:
 - Performance regression tests
 - Cross-platform CI/CD
 
-## 📝 Documentation Standards
+## Documentation Standards
 
 ### Code Documentation
 - **JSDoc comments** for public methods
@@ -192,7 +192,7 @@ When adding features, update:
 - **Step-by-step instructions** for complex procedures
 - **Cross-references** between related sections
 
-## 🐛 Bug Reports
+## Bug Reports
 
 ### Before Reporting
 1. **Check existing issues** - Avoid duplicates
@@ -221,7 +221,7 @@ Brief description of the issue
 - Relevant configuration
 ```
 
-## ✨ Feature Requests
+## Feature Requests
 
 ### Feature Request Template
 ```markdown
@@ -238,7 +238,7 @@ Ideas on how it could work
 Other approaches you've thought about
 ```
 
-## 🔀 Pull Request Process
+## Pull Request Process
 
 ### Before Submitting
 1. **Create an issue** - Discuss the change first
@@ -283,7 +283,7 @@ Fixes #123
 4. **Approval** - At least one maintainer approval
 5. **Merge** - Squash and merge preferred
 
-## 🚀 Release Process
+## Release Process
 
 ### Versioning
 We follow [Semantic Versioning](https://semver.org/):
@@ -299,7 +299,7 @@ We follow [Semantic Versioning](https://semver.org/):
 5. **Create release notes** - GitHub release
 6. **Publish** - npm publish (when ready)
 
-## 🤝 Community Guidelines
+## Community Guidelines
 
 ### Code of Conduct
 - **Be respectful** - Constructive feedback only
@@ -313,7 +313,7 @@ We follow [Semantic Versioning](https://semver.org/):
 - **Pull Requests** - Code changes, documentation
 - **Clear communication** - Be specific and helpful
 
-## 🔮 Future Plans
+## Future Plans
 
 ### Upcoming Features
 - React/Ink UI (when compatibility resolves)
@@ -331,7 +331,7 @@ We follow [Semantic Versioning](https://semver.org/):
 - **Performance** - Optimization opportunities
 - **User experience** - CLI usability improvements
 
-## 📞 Getting Help
+## Getting Help
 
 ### Resources
 - **Documentation** - Start with [User Guide](USER-GUIDE.md)

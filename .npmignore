@@ -1,7 +1,8 @@
 # Development files
 src/
+test/
 tsconfig.json
-.eslintrc.js
+eslint.config.js
 .prettierrc
 *.md
 docs/

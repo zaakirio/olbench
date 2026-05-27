@@ -1,269 +1,271 @@
-# olbench 🚀
+# olbench
 
-**Comprehensive Node.js-based benchmarking tool for Ollama local LLMs**
+**A Node.js benchmarking tool for Ollama local LLMs.**
 
 [![npm version](https://badge.fury.io/js/olbench.svg)](https://www.npmjs.com/package/olbench)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen.svg)](https://nodejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Automatically detects your system capabilities, discovers installed models, and provides detailed performance benchmarks for Ollama local LLMs with smart download size estimation.
+olbench detects your system capabilities, recommends models that fit your hardware,
+and produces accurate performance benchmarks for locally running Ollama models. It
+measures real throughput, true time-to-first-token, and actual model memory usage,
+then exports the results as JSON, CSV, Markdown, or HTML.
 
-## ✨ Features
+## Features
 
-- 🖥️ **Smart System Detection** - Automatically detects RAM, GPUs, and OS
-- 🎯 **Intelligent Model Recommendations** - RAM-based tier system (4-64GB+)
-- 📊 **Comprehensive Benchmarking** - Tokens/sec, latency, memory, quality metrics
-- 🔍 **Auto-Model Discovery** - Detects installed models, estimates download sizes
-- 📁 **Multiple Output Formats** - JSON, CSV, Markdown, HTML reports
-- ⚙️ **Flexible Configuration** - YAML config files with CLI overrides
-- 🎨 **Beautiful CLI** - Colored output with progress indicators
-- 📏 **Smart Size Tracking** - Real sizes for installed, estimates for missing models
+- **Hardware-aware recommendations** — scores your CPU, GPU/VRAM, and available RAM to suggest models that will actually run well.
+- **System detection** — reports OS, architecture, CPU, RAM, GPUs (including NVIDIA CUDA capability), and the running Ollama version.
+- **Accurate metrics** — throughput (tokens/sec), true streamed time-to-first-token, total latency, resident model memory, and response quality.
+- **Model discovery** — browse popular models by category, search, check download sizes, and pull models through Ollama.
+- **Multiple report formats** — JSON, CSV, Markdown, and HTML.
+- **Flexible configuration** — YAML config files with command-line overrides.
 
-## 🚀 Quick Start
+## Requirements
 
-### Installation
+- Node.js 22 or newer (for native `fetch` and ESM support)
+- [Ollama](https://ollama.com) installed and running
+- 4GB RAM minimum (8GB or more recommended)
+
+## Installation
 
 ```bash
 npm install -g olbench
 ```
 
-### Basic Usage
+## Quick Start
 
 ```bash
-# Check your system capabilities
+# Inspect your system and see recommended models
 olbench info
 
-# Discover models for your system
+# Discover models that fit your hardware
 olbench discover
 
-# Install a model (using Ollama)
+# Install a model through Ollama
 ollama pull gemma:2b
 
-# Run benchmarks
+# Run a benchmark
 olbench run --models "gemma:2b" --iterations 5
 ```
 
-## 📋 Commands
+## Commands
 
 ### `olbench info`
-Display system information and model recommendations
+
+Display system information, hardware score, and hardware-aware model recommendations.
 
 ```bash
-olbench info                # Basic system info
-olbench info --verbose      # Detailed information
+olbench info              # System summary and recommendations
+olbench info --verbose    # Also list every tier and its models
 ```
 
 ### `olbench discover`
-Explore and manage available models
+
+Explore and manage available models.
 
 ```bash
 olbench discover                        # Recommendations for your RAM
-olbench discover --category code        # Filter by category
-olbench discover --search "llama"       # Search models
-olbench discover --trending             # Popular models
-olbench discover --installed            # Show installed models
-olbench discover --size "llama3.1:8b"  # Check download size
-olbench discover --pull "gemma:2b"      # Install a model
+olbench discover --category code        # Filter by category (chat, code, vision, reasoning)
+olbench discover --search "llama"       # Search by name or description
+olbench discover --trending             # Most popular models
+olbench discover --installed            # Models already installed locally
+olbench discover --size "llama3.1:8b"   # Estimate download size
+olbench discover --pull "gemma:2b"      # Install a model via Ollama
 ```
 
 ### `olbench run`
-Execute benchmark tests
+
+Execute benchmarks.
 
 ```bash
-olbench run                                    # Auto-select models
-olbench run --models "gemma:2b,phi3:3.8b"     # Specific models
-olbench run --tier 2                          # Test tier 2 models
-olbench run --iterations 10                   # More iterations
-olbench run --output results.json             # Save results
-olbench run --format markdown                 # Different format
-olbench run --prompts coding                  # Specific prompt set
+olbench run                                 # Auto-select models for your hardware
+olbench run --models "gemma:2b,phi3:3.8b"   # Specific models
+olbench run --tier 2                        # Top models from a RAM tier
+olbench run --iterations 10                 # More iterations per model
+olbench run --warmup 2                      # Warmup runs before measuring
+olbench run --prompts coding                # Prompt set: default, coding, creative, reasoning
+olbench run --output results.csv --format csv   # Save a report (json, csv, markdown, html)
 ```
 
 ### `olbench config`
-Manage configuration
+
+Manage configuration.
 
 ```bash
-olbench config --generate config.yaml    # Create sample config
-olbench config --validate config.yaml    # Validate config
-olbench config --show                    # Show current config
+olbench config --generate config.yaml   # Write a sample config file
+olbench config --validate config.yaml   # Validate a config file
+olbench config --show                    # Print the effective configuration
 ```
 
-## 📊 Example Output
+## Configuration
 
-### System Information
-```
-🚀 olbench - Ollama Benchmark Tool
+Create a `config.yaml` for persistent settings, then pass it with `--config`:
 
-🖥️  System Information
-• Operating System: macOS (arm64)
-• Total RAM: 24GB
-• RAM Tier: Tier 3 (Performance Tier)
-• Ollama: ✅ Running (v0.9.0)
+```yaml
+benchmark:
+  iterations: 5
+  concurrency: 1
+  timeout: 300
+  warmupIterations: 2
 
-📊 Recommendations for 24GB RAM:
-💡 Recommended to Install:
-• llama3.1:8b - Meta Llama 3.1 8B | Download: 4.7GB
-• deepseek-coder:6.7b - DeepSeek Coder 6.7B | Download: 3.8GB
-• gemma2:9b - Google Gemma 2 9B | Download: 5.4GB
-```
+prompts:
+  default:
+    - "Explain quantum computing in simple terms."
+    - "Write a Python function to calculate the Fibonacci sequence."
 
-### Smart Model Detection
-```
-✅ Configuration loaded
-  Models to test: gemma3:4b, llama3.1:8b, mistral:7b
-  Iterations: 5
-  Prompts: 1
-  Already installed: 1 models
-    • gemma3:4b: 3.1GB
-  Need to download: 2 models (8.8GB)
-    • llama3.1:8b: 4.7GB
-    • mistral:7b: 4.1GB
+output:
+  formats: ["json", "csv", "markdown"]
+  includeSystemInfo: true
+  directory: "./benchmark-results"
+
+ollama:
+  baseUrl: "http://localhost:11434"
+  timeout: 300
+  retries: 3
 ```
 
-### Benchmark Results
+Generate a fully-populated sample with `olbench config --generate config.yaml`.
+
+### Connecting to a remote Ollama
+
+olbench honours the standard `OLLAMA_HOST` environment variable. Set it to point at a
+non-default host or port:
+
+```bash
+OLLAMA_HOST=http://192.168.1.50:11434 olbench info
 ```
-🎉 Benchmark completed successfully!
+
+When unset, olbench uses `http://localhost:11434`.
+
+## Metrics
+
+For each model, olbench reports:
+
+| Metric | Description |
+|--------|-------------|
+| Tokens/sec | Generation throughput, computed from Ollama's `eval_count` / `eval_duration`. |
+| First token | True time-to-first-token, measured from the streamed response (wall clock from request to the first generated token). |
+| Total time | End-to-end latency of the request. |
+| Model memory | Resident memory of the loaded model (RAM + VRAM), read from Ollama's `/api/ps`. |
+| Quality | Response consistency and completion rate across iterations. |
+
+## RAM Tiers
+
+Recommendations start from a RAM tier and are then refined by the hardware score
+(CPU, GPU/VRAM, architecture).
+
+| Tier | RAM Range | Example Models |
+|------|-----------|----------------|
+| 1 | 4–7GB | gemma:2b, phi:2.7b, phi3:3.8b |
+| 2 | 8–15GB | llama3.1:8b, mistral:7b, gemma2:9b |
+| 3 | 16–31GB | gemma2:9b, deepseek-r1:14b, llava:13b |
+| 4 | 32GB+ | phi4:14b, deepseek-r1:32b |
+
+## Example Output
+
+### System information
+
+```
+System Information
+
+Basic Information:
+  Operating System: darwin (arm64)
+  CPU: Apple M3 (8 cores @ 2.4GHz)
+  Total RAM: 24GB
+  Available RAM: 16GB (14GB effective)
+  RAM Tier: Tier 3 (16GB-31GB)
+  Hardware Score: 30.8/100 (CPU: 22.0, GPU: 0.0)
+
+Ollama Status:
+  Status: Running
+  Version: v0.9.0
+```
+
+### Benchmark results
+
+```
+Benchmark completed successfully
 
 Summary:
-• Models tested: 3
-• Total benchmarks: 15
-• Duration: 87.3s
-• Fastest model: gemma3:4b
-• Average speed: 31.2 tokens/sec
+  Models tested: 3
+  Total benchmarks: 15
+  Duration: 87.3s
+  Fastest model: gemma3:4b
+  Average speed: 31.2 tokens/sec
 
 Detailed Results:
 Model               Tokens/sec  First Token Total Time  Memory    Quality
 --------------------------------------------------------------------------------
-gemma3:4b           35.2        28ms        7234ms      3.1GB     98.5
-llama3.1:8b         29.1        45ms        8912ms      4.7GB     99.2
-mistral:7b          28.9        38ms        9156ms      4.1GB     97.8
+gemma3:4b           35.2        310ms       7234ms      3100MB    98.5
+llama3.1:8b         29.1        420ms       8912ms      4700MB    99.2
+mistral:7b          28.9        380ms       9156ms      4100MB    97.8
 ```
 
-## 🤖 Auto-Detection Features
+## Library Usage
 
-olbench intelligently detects your system and models to provide accurate information:
+olbench can also be used programmatically:
 
-### 📦 Model Detection
-- **Scans installed models** via Ollama API (`/api/tags`)
-- **Shows real file sizes** for installed models
-- **Estimates download sizes** for missing models using:
-  - Database lookup for popular models
-  - Pattern-based estimation (e.g., `gemma3:4b` → ~2.5GB)
-  - Smart fallbacks for unknown models
+```ts
+import { SystemDetector, ModelTierManager, BenchmarkRunner } from 'olbench';
 
-### 💾 Size Reporting
-```bash
-# Shows only what you actually need to download
-olbench run --models "installed:model,missing:model" --verbose
+const detector = new SystemDetector();
+const system = await detector.detectSystem();
 
-# Output:
-  Already installed: 1 models
-    • installed:model: 3.1GB
-  Need to download: 1 models (4.7GB)
-    • missing:model: 4.7GB
+const runner = new BenchmarkRunner();
+const results = await runner.runBenchmark({
+  models: ['gemma:2b'],
+  prompts: BenchmarkRunner.getDefaultPrompts(),
+  iterations: 5,
+  concurrency: 1,
+  timeout: 300,
+  warmupIterations: 1,
+});
 ```
 
-### 🎯 Benefits
-- **No manual database maintenance** - works with any Ollama model
-- **Accurate resource planning** - know exactly what bandwidth/storage you need
-- **Works offline** - once models are installed, no internet required for detection
+## Documentation
 
-## ⚙️ Configuration
+- [User Guide](docs/USER-GUIDE.md) — usage instructions
+- [Technical Documentation](docs/TECHNICAL.md) — architecture and internals
+- [API Reference](docs/API.md) — library interfaces
+- [Examples](docs/EXAMPLES.md) — practical use cases
+- [Contributing](docs/CONTRIBUTING.md) — development guide
 
-Create a `config.yaml` file for persistent settings:
-
-```yaml
-models:
-  - "llama3.1:8b"
-  - "gemma:2b"
-
-benchmark:
-  iterations: 5
-  concurrency: 1
-  timeout: 30
-  warmupIterations: 1
-
-prompts:
-  - "default"
-  - "coding"
-
-output:
-  format: "json"
-  includeSystemInfo: true
-  prettify: true
-```
-
-## 🎯 RAM Tiers
-
-| Tier | RAM Range | Recommended Models | Use Case |
-|------|-----------|-------------------|----------|
-| **Tier 1** | 4-7GB | gemma:2b, phi:2.7b | Basic tasks, testing |
-| **Tier 2** | 8-15GB | llama3.1:8b, mistral:7b | General purpose |
-| **Tier 3** | 16-31GB | gemma2:9b, deepseek-r1:14b | Performance |
-| **Tier 4** | 32GB+ | qwq:32b, llama3.1:70b | High-end tasks |
-
-## 📚 Documentation
-
-- [📖 User Guide](docs/USER-GUIDE.md) - Comprehensive usage instructions
-- [🔧 Technical Documentation](docs/TECHNICAL.md) - Architecture and internals
-- [📋 API Reference](docs/API.md) - Library usage and interfaces
-- [💡 Examples](docs/EXAMPLES.md) - Practical use cases and scripts
-- [🤝 Contributing](docs/CONTRIBUTING.md) - Development and contribution guide
-
-## 🛠️ Requirements
-
-- **Node.js 22+** (for native fetch and ESM support)
-- **Ollama** installed and running
-- **4GB+ RAM** (8GB+ recommended)
-
-## 📦 Development
+## Development
 
 ```bash
-git clone https://github.com/username/olbench.git
+git clone https://github.com/zaakirio/olbench.git
 cd olbench
 npm install
-npm run build
 
-# Development commands
-npm run dev info           # Run with hot reload
-npm run typecheck         # Type checking
-npm run lint              # Code linting
-npm run format            # Code formatting
+npm run dev info     # Run from source with tsx
+npm run build        # Compile TypeScript to dist/
+npm run typecheck    # Type-check without emitting
+npm run lint         # Lint sources
+npm test             # Run the test suite (node:test)
 ```
 
-## 🤝 Contributing
+## Contributing
 
-Contributions are welcome! Please read our [Contributing Guide](docs/CONTRIBUTING.md) for details on:
+Contributions are welcome. See the [Contributing Guide](docs/CONTRIBUTING.md) for
+development setup, code standards, and the pull request process.
 
-- Development setup
-- Code standards
-- Testing guidelines
-- Pull request process
+## License
 
-## 📄 License
+MIT — see [LICENSE](LICENSE).
 
-MIT License - see [LICENSE](LICENSE) file for details.
+## Acknowledgments
 
-## 🙏 Acknowledgments
+- [Ollama](https://ollama.com) for the local LLM runtime
+- [Commander.js](https://github.com/tj/commander.js/) for the CLI framework
+- [chalk](https://github.com/chalk/chalk) for terminal styling
+- [systeminformation](https://github.com/sebhildebrandt/systeminformation) for hardware detection
 
-- [Ollama](https://ollama.ai/) for the excellent local LLM platform
-- [Commander.js](https://github.com/tj/commander.js/) for CLI framework
-- [Chalk](https://github.com/chalk/chalk) for terminal styling
-- [systeminformation](https://github.com/sebhildebrandt/systeminformation) for system detection
+## Roadmap
 
-## 📈 Roadmap
-
-- [x] ~~Auto-detection of installed models~~ ✅ **Completed**
-- [x] ~~Smart download size estimation~~ ✅ **Completed**
-- [ ] Automated testing suite
+- [x] Auto-detection of installed models
+- [x] Smart download-size estimation
+- [x] Hardware-aware model recommendations
+- [x] Automated test suite
 - [ ] Performance regression detection
-- [ ] React/Ink UI (when compatibility improves)
-- [ ] Plugin system for extensions
-- [ ] Cloud model comparison
-- [ ] Real-time monitoring dashboard
+- [ ] Plugin system for custom prompt sets and reporters
 - [ ] Model performance history tracking
-- [ ] Batch model comparison reports
-
----
-
-**Made with ❤️ for the Ollama community**

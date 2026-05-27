@@ -2,7 +2,7 @@
 
 A comprehensive Node.js-based benchmarking tool for Ollama local LLMs that automatically detects system capabilities and provides intelligent model recommendations.
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - **Node.js 22+** installed
@@ -36,7 +36,7 @@ ollama pull gemma:2b  # or any model from discover command
 olbench run --models "gemma:2b" --iterations 3
 ```
 
-## 📋 Commands Overview
+## Commands Overview
 
 ### `info` - System Information
 Get detailed information about your system and model recommendations.
@@ -135,7 +135,7 @@ olbench config --validate my-config.yml
 olbench config --show
 ```
 
-## 🎯 RAM Tiers & Model Selection
+## RAM Tiers & Model Selection
 
 The tool automatically categorizes your system into RAM tiers and recommends appropriate models:
 
@@ -169,7 +169,7 @@ The tool automatically categorizes your system into RAM tiers and recommends app
 - `deepseek-r1:14b` - Large reasoning
 - `deepseek-r1:32b` - Extra large reasoning
 
-## 📊 Understanding Benchmark Results
+## Understanding Benchmark Results
 
 ### Performance Metrics
 - **Tokens/sec** - Generation speed (higher is better)
@@ -210,7 +210,7 @@ Rich visual report with:
 - Detailed model comparisons
 - Beautiful styling and graphs
 
-## 🔧 Configuration Files
+## Configuration Files
 
 ### Default Configuration
 Located at `config/default.yml`, contains:
@@ -240,7 +240,7 @@ output:
 
 Use with: `olbench run --config my-config.yml`
 
-## 💡 Best Practices
+## Best Practices
 
 ### Before Benchmarking
 1. **Check system info** - Ensure adequate RAM and Ollama is running
@@ -258,7 +258,7 @@ Use with: `olbench run --config my-config.yml`
 - **Consider use case** - High tokens/sec for chat, low latency for real-time
 - **Save results** - Keep benchmarks for future comparisons
 
-## 🔍 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -295,7 +295,7 @@ ollama pull model-name
 - Check `olbench discover` for model recommendations
 - Use `olbench info --verbose` for detailed system analysis
 
-## 🚀 Advanced Usage
+## Advanced Usage
 
 ### Batch Benchmarking
 ```bash

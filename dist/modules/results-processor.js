@@ -1,3 +1,4 @@
+import { VERSION } from './version.js';
 export class ResultsProcessor {
     processBenchmarkResults(modelResults, systemInfo, startTime, configuration) {
         const results = modelResults.map(modelResult => this.processModelResult(modelResult, systemInfo));
@@ -12,7 +13,7 @@ export class ResultsProcessor {
             systemInfo,
             results,
             metadata: {
-                version: '1.0.0',
+                version: VERSION,
                 duration,
                 configuration,
             },
@@ -37,9 +38,11 @@ export class ResultsProcessor {
         const memoryUsages = metrics.map(m => m.memoryUsed);
         const peakMemoryUsage = Math.max(...memoryUsages);
         const averageMemoryUsage = memoryUsages.reduce((sum, usage) => sum + usage, 0) / memoryUsages.length;
-        // Calculate memory efficiency as tokens per MB
+        // Calculate memory efficiency as tokens per MB of resident model memory.
+        // averageMemoryUsage can be 0 when Ollama does not report the model as
+        // running (e.g. it was unloaded between runs), so guard the division.
         const totalTokens = metrics.reduce((sum, m) => sum + m.totalTokens, 0);
-        const memoryEfficiency = totalTokens / averageMemoryUsage;
+        const memoryEfficiency = averageMemoryUsage > 0 ? totalTokens / averageMemoryUsage : 0;
         return {
             peakMemoryUsage,
             averageMemoryUsage,
@@ -170,7 +173,7 @@ export class ResultsProcessor {
                 lines.push(`  - ${gpu.vendor} ${gpu.model} (${gpu.vram}MB VRAM)`);
             });
         }
-        return lines.join('\\n');
+        return lines.join('\n');
     }
 }
 //# sourceMappingURL=results-processor.js.map

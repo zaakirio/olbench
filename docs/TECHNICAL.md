@@ -2,23 +2,23 @@
 
 Advanced technical documentation for developers, contributors, and power users.
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
 ### Core Modules
 
 ```
 src/
-├── modules/
-│   ├── system-detection.ts     # Hardware/OS detection
-│   ├── model-tiers.ts          # RAM-based model management
-│   ├── model-discovery.ts      # Dynamic model discovery
-│   ├── benchmark-runner.ts     # Benchmark execution engine
-│   ├── results-processor.ts    # Results analysis & comparison
-│   ├── config-manager.ts       # YAML configuration handling
-│   └── report-generator.ts     # Multi-format report generation
-├── components/                 # React/Ink UI components (future)
-├── simple-cli.ts              # Working CLI implementation
-└── index.ts                   # Library exports
+modules/
+  system-detection.ts     # Hardware/OS detection
+  model-tiers.ts          # RAM-based model management
+  model-discovery.ts      # Dynamic model discovery
+  benchmark-runner.ts     # Benchmark execution engine
+  results-processor.ts    # Results analysis & comparison
+  config-manager.ts       # YAML configuration handling
+  report-generator.ts     # Multi-format report generation
+components/                 # React/Ink UI components (future)
+simple-cli.ts              # Working CLI implementation
+index.ts                   # Library exports
 ```
 
 ### Technology Stack
@@ -30,7 +30,7 @@ src/
 - **YAML** - Human-readable configuration files
 - **React/Ink** - Rich CLI components (future enhancement)
 
-## 🔧 API Reference
+## API Reference
 
 ### SystemDetector
 
@@ -90,9 +90,9 @@ const results = await runner.runBenchmark(config);
 
 // Run concurrent benchmarks
 const concurrentResults = await runner.runConcurrentBenchmark(
-  'gemma:2b', 
-  'Test prompt', 
-  3, 
+  'gemma:2b',
+  'Test prompt',
+  3,
   300
 );
 ```
@@ -106,9 +106,9 @@ const processor = new ResultsProcessor();
 
 // Process benchmark results
 const report = processor.processBenchmarkResults(
-  modelResults, 
-  systemInfo, 
-  startTime, 
+  modelResults,
+  systemInfo,
+  startTime,
   configuration
 );
 
@@ -141,12 +141,12 @@ const htmlReport = await generator.generateReport(report, {
 
 // Generate comparison report
 const comparisonReport = await generator.generateComparisonReport(
-  comparison, 
+  comparison,
   { format: 'markdown', outputPath: 'comparison.md' }
 );
 ```
 
-## 📊 Data Structures
+## Data Structures
 
 ### SystemInfo Interface
 ```typescript
@@ -219,7 +219,7 @@ interface PopularModel {
 }
 ```
 
-## ⚙️ Configuration System
+## Configuration System
 
 ### Configuration File Structure
 ```yaml
@@ -275,7 +275,7 @@ BENCHMARK_ITERATIONS=5
 OUTPUT_DIRECTORY=./results
 ```
 
-## 🔌 Ollama API Integration
+## Ollama API Integration
 
 ### API Endpoints Used
 - `GET /api/version` - Check Ollama version
@@ -315,14 +315,14 @@ interface OllamaGenerateResponse {
 }
 ```
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 ### Calculation Methods
 
 #### Tokens Per Second
 ```typescript
-const tokensPerSecond = completionTokens > 0 
-  ? (completionTokens / evalTime) * 1000 
+const tokensPerSecond = completionTokens > 0
+  ? (completionTokens / evalTime) * 1000
   : 0;
 ```
 
@@ -346,7 +346,7 @@ const consistency = Math.max(0, 100 - (coefficientOfVariation * 100));
 - **Min/Max** - Performance range
 - **Percentiles** - Distribution analysis (future enhancement)
 
-## 🔄 Report Generation
+## Report Generation
 
 ### Output Formats
 
@@ -390,7 +390,7 @@ mistral:7b,35.2,28,7234,125.4,98.2,0.36,142.5,94.2,100.0,2024-01-15T10:30:00.000
 - Results tables
 - Detailed analysis sections
 
-## 🧪 Testing & Validation
+## Testing & Validation
 
 ### Unit Tests (Future)
 ```typescript
@@ -416,7 +416,7 @@ describe('SystemDetector', () => {
 - Concurrent execution handling
 - Large model benchmarking
 
-## 🔧 Development Setup
+## Development Setup
 
 ### Prerequisites
 - Node.js 22+
@@ -481,7 +481,7 @@ class ReportGenerator {
 }
 ```
 
-## 🐛 Debugging
+## Debugging
 
 ### Debug Mode
 ```bash
@@ -516,7 +516,7 @@ const result = await runner.runBenchmark(config);
 console.timeEnd('benchmark');
 ```
 
-## 🚀 Deployment
+## Deployment
 
 ### Production Build
 ```bash
@@ -540,7 +540,7 @@ COPY dist/ ./dist/
 CMD ["node", "dist/simple-cli.js"]
 ```
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 ### Planned Features
 - [ ] React/Ink UI when compatibility is resolved

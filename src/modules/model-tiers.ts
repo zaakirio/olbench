@@ -349,6 +349,6 @@ export class ModelTierManager {
       lines.push(`    ${index + 1}. ${model.name}${model.description ? ' - ' + model.description : ''}`);
     });
 
-    return lines.join('\\n');
+    return lines.join('\n');
   }
 }

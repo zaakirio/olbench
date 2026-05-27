@@ -1,5 +1,6 @@
+import { getOllamaBaseUrl } from './ollama.js';
 export class ModelDiscovery {
-    baseUrl = 'http://localhost:11434';
+    baseUrl = getOllamaBaseUrl();
     // Popular models based on Ollama registry and community usage
     popularModels = [
         // Chat models
