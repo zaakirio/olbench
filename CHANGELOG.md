@@ -1,3 +1,10 @@
+## [2.0.2](https://github.com/zaakirio/olbench/compare/v2.0.1...v2.0.2) (2026-05-27)
+
+
+### Bug Fixes
+
+* add files allowlist to keep .releaserc out of the published package ([ace775e](https://github.com/zaakirio/olbench/commit/ace775ed56d7730223cc50de9d1b32f855e11ff0))
+
 ## [2.0.1](https://github.com/zaakirio/olbench/compare/v2.0.0...v2.0.1) (2026-05-27)
 
 
