@@ -32,8 +32,13 @@ export interface ModelBenchmarkResult {
 export declare class BenchmarkRunner {
     private baseUrl;
     runBenchmark(config: BenchmarkConfig): Promise<ModelBenchmarkResult[]>;
+    /**
+     * Query Ollama's `/api/ps` endpoint for the resident memory of a loaded
+     * model. Returns the total resident size in MB (RAM + VRAM), or 0 if the
+     * model is not currently reported as running.
+     */
+    private getModelMemoryMB;
     private ensureModel;
-    private pullModel;
     private runSingleBenchmark;
     private calculateAggregateMetrics;
     runConcurrentBenchmark(model: string, prompt: string, concurrency: number, timeout: number): Promise<BenchmarkMetrics[]>;

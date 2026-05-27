@@ -2,6 +2,8 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import * as yaml from 'yaml';
 import { BenchmarkConfig } from './benchmark-runner.js';
+import { getOllamaBaseUrl } from './ollama.js';
+import { VERSION } from './version.js';
 
 export interface AppConfig {
   version: string;
@@ -80,7 +82,7 @@ export class ConfigManager {
       // Merge with default config
       this.config = this.mergeConfig(this.getDefaultConfig(), parsedConfig);
       return this.config;
-    } catch (error) {
+    } catch {
       if (configPath) {
         throw new Error(`Failed to load config file: ${configPath}`);
       }
@@ -127,7 +129,7 @@ export class ConfigManager {
 
   private getDefaultConfig(): AppConfig {
     return {
-      version: '1.0.0',
+      version: VERSION,
       benchmark: {
         timeout: 300,
         iterations: 5,
@@ -217,7 +219,7 @@ export class ConfigManager {
         directory: './benchmark-results',
       },
       ollama: {
-        baseUrl: 'http://localhost:11434',
+        baseUrl: getOllamaBaseUrl(),
         timeout: 300,
         retries: 3,
       },
@@ -252,7 +254,7 @@ export class ConfigManager {
     const result = { ...target };
     
     for (const key in source) {
-      if (source.hasOwnProperty(key)) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
         if (typeof source[key] === 'object' && !Array.isArray(source[key]) && source[key] !== null) {
           result[key] = this.mergeDeep(target[key], source[key]);
         } else {

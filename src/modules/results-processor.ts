@@ -1,5 +1,6 @@
 import { ModelBenchmarkResult, BenchmarkMetrics } from './benchmark-runner.js';
 import { SystemInfo } from './system-detection.js';
+import { VERSION } from './version.js';
 
 export interface QualityMetrics {
   averageResponseLength: number;
@@ -67,7 +68,7 @@ export class ResultsProcessor {
       systemInfo,
       results,
       metadata: {
-        version: '1.0.0',
+        version: VERSION,
         duration,
         configuration,
       },
@@ -99,9 +100,11 @@ export class ResultsProcessor {
     const peakMemoryUsage = Math.max(...memoryUsages);
     const averageMemoryUsage = memoryUsages.reduce((sum, usage) => sum + usage, 0) / memoryUsages.length;
     
-    // Calculate memory efficiency as tokens per MB
+    // Calculate memory efficiency as tokens per MB of resident model memory.
+    // averageMemoryUsage can be 0 when Ollama does not report the model as
+    // running (e.g. it was unloaded between runs), so guard the division.
     const totalTokens = metrics.reduce((sum, m) => sum + m.totalTokens, 0);
-    const memoryEfficiency = totalTokens / averageMemoryUsage;
+    const memoryEfficiency = averageMemoryUsage > 0 ? totalTokens / averageMemoryUsage : 0;
 
     return {
       peakMemoryUsage,
@@ -251,7 +254,7 @@ export class ResultsProcessor {
       });
     }
 
-    return lines.join('\\n');
+    return lines.join('\n');
   }
 }
 

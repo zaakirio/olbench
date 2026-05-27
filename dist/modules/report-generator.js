@@ -63,9 +63,9 @@ export class ReportGenerator {
             'Tokens/sec',
             'First Token Latency (ms)',
             'Total Latency (ms)',
-            'Peak Memory (MB)',
-            'Avg Memory (MB)',
-            'Memory Efficiency',
+            'Peak Model Memory (MB)',
+            'Avg Model Memory (MB)',
+            'Memory Efficiency (tokens/MB)',
             'Response Length',
             'Consistency (%)',
             'Completion Rate (%)',
@@ -84,7 +84,7 @@ export class ReportGenerator {
             result.quality.completionRate.toFixed(2),
             result.timestamp.toISOString()
         ]);
-        return [headers.join(','), ...rows.map(row => row.join(','))].join('\\n');
+        return [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
     }
     generateMarkdownReport(report, options) {
         const lines = [];
@@ -122,8 +122,8 @@ export class ReportGenerator {
         // Results Table
         lines.push('## Benchmark Results');
         lines.push('');
-        lines.push('| Model | Tokens/sec | First Token (ms) | Total Time (ms) | Memory (MB) | Quality Score |');
-        lines.push('|-------|------------|------------------|-----------------|-------------|---------------|');
+        lines.push('| Model | Tokens/sec | First Token (ms) | Total Time (ms) | Model Memory (MB) | Quality Score |');
+        lines.push('|-------|------------|------------------|-----------------|-------------------|---------------|');
         report.results.forEach(result => {
             const qualityScore = (result.quality.consistency * result.quality.completionRate / 100).toFixed(1);
             lines.push(`| ${result.model} | ${result.tokensPerSecond.toFixed(1)} | ${result.firstTokenLatency.toFixed(0)} | ${result.totalLatency.toFixed(0)} | ${result.memoryUsage.averageMemoryUsage.toFixed(1)} | ${qualityScore} |`);
@@ -140,9 +140,9 @@ export class ReportGenerator {
             lines.push(`- First token latency: ${result.firstTokenLatency.toFixed(2)}ms`);
             lines.push(`- Total latency: ${result.totalLatency.toFixed(2)}ms`);
             lines.push('');
-            lines.push('**Memory Usage:**');
-            lines.push(`- Peak memory: ${result.memoryUsage.peakMemoryUsage.toFixed(2)}MB`);
-            lines.push(`- Average memory: ${result.memoryUsage.averageMemoryUsage.toFixed(2)}MB`);
+            lines.push('**Model Memory:**');
+            lines.push(`- Peak resident memory: ${result.memoryUsage.peakMemoryUsage.toFixed(2)}MB`);
+            lines.push(`- Average resident memory: ${result.memoryUsage.averageMemoryUsage.toFixed(2)}MB`);
             lines.push(`- Memory efficiency: ${result.memoryUsage.memoryEfficiency.toFixed(2)} tokens/MB`);
             lines.push('');
             lines.push('**Quality Metrics:**');
@@ -152,7 +152,7 @@ export class ReportGenerator {
             lines.push(`- Completion rate: ${result.quality.completionRate.toFixed(1)}%`);
             lines.push('');
         });
-        return lines.join('\\n');
+        return lines.join('\n');
     }
     generateHtmlReport(report, options) {
         const html = `
@@ -249,7 +249,7 @@ export class ReportGenerator {
 </head>
 <body>
     <div class="header">
-        <h1>🚀 Ollama Benchmark Report</h1>
+        <h1>Ollama Benchmark Report</h1>
         <p><strong>Generated:</strong> ${report.summary.timestamp.toISOString()}</p>
         <p><strong>Duration:</strong> ${(report.metadata.duration / 1000).toFixed(1)} seconds</p>
     </div>
@@ -275,7 +275,7 @@ export class ReportGenerator {
 
     ${options.includeSystemInfo !== false ? `
     <div class="model-details">
-        <h2>🖥️ System Information</h2>
+        <h2>System Information</h2>
         <div class="metrics-grid">
             <div class="metric-group">
                 <h4>Hardware</h4>
@@ -295,7 +295,7 @@ export class ReportGenerator {
     </div>
     ` : ''}
 
-    <h2>📊 Results Overview</h2>
+    <h2>Results Overview</h2>
     <table>
         <thead>
             <tr>
@@ -303,7 +303,7 @@ export class ReportGenerator {
                 <th>Tokens/sec</th>
                 <th>First Token (ms)</th>
                 <th>Total Time (ms)</th>
-                <th>Memory (MB)</th>
+                <th>Model Memory (MB)</th>
                 <th>Quality Score</th>
             </tr>
         </thead>
@@ -324,7 +324,7 @@ export class ReportGenerator {
         </tbody>
     </table>
 
-    <h2>📈 Detailed Analysis</h2>
+    <h2>Detailed Analysis</h2>
     ${report.results.map(result => {
             const maxTokensPerSec = Math.max(...report.results.map(r => r.tokensPerSecond));
             const performancePercentage = (result.tokensPerSecond / maxTokensPerSec) * 100;
@@ -338,19 +338,19 @@ export class ReportGenerator {
             
             <div class="metrics-grid">
                 <div class="metric-group">
-                    <h4>⚡ Performance</h4>
+                    <h4>Performance</h4>
                     <p><strong>Tokens/sec:</strong> ${result.tokensPerSecond.toFixed(2)}</p>
                     <p><strong>First token:</strong> ${result.firstTokenLatency.toFixed(2)}ms</p>
                     <p><strong>Total time:</strong> ${result.totalLatency.toFixed(2)}ms</p>
                 </div>
                 <div class="metric-group">
-                    <h4>💾 Memory</h4>
+                    <h4>Model Memory</h4>
                     <p><strong>Peak:</strong> ${result.memoryUsage.peakMemoryUsage.toFixed(2)}MB</p>
                     <p><strong>Average:</strong> ${result.memoryUsage.averageMemoryUsage.toFixed(2)}MB</p>
                     <p><strong>Efficiency:</strong> ${result.memoryUsage.memoryEfficiency.toFixed(2)} tok/MB</p>
                 </div>
                 <div class="metric-group">
-                    <h4>🎯 Quality</h4>
+                    <h4>Quality</h4>
                     <p><strong>Response length:</strong> ${result.quality.averageResponseLength.toFixed(1)} tokens</p>
                     <p><strong>Consistency:</strong> ${result.quality.consistency.toFixed(1)}%</p>
                     <p><strong>Completion rate:</strong> ${result.quality.completionRate.toFixed(1)}%</p>
@@ -390,9 +390,9 @@ export class ReportGenerator {
             const memoryChange = comp.memoryUsage.change >= 0 ? `+${comp.memoryUsage.change.toFixed(1)}%` : `${comp.memoryUsage.change.toFixed(1)}%`;
             lines.push(`| ${comp.model} | ${speedChange} | ${latencyChange} | ${memoryChange} |`);
         });
-        return lines.join('\\n');
+        return lines.join('\n');
     }
-    generateComparisonHtml(comparison) {
+    generateComparisonHtml(_comparison) {
         // Similar HTML structure for comparison reports
         return `<html><body><h1>Comparison Report</h1><p>HTML comparison report coming soon...</p></body></html>`;
     }

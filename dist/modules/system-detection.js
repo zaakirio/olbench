@@ -1,12 +1,12 @@
 import si from 'systeminformation';
+import { getOllamaBaseUrl } from './ollama.js';
 export class SystemDetector {
     async detectSystem() {
         try {
             // Get system information
-            const [mem, osInfo, system, graphics, cpu] = await Promise.all([
+            const [mem, osInfo, graphics, cpu] = await Promise.all([
                 si.mem(),
                 si.osInfo(),
-                si.system(),
                 si.graphics(),
                 si.cpu(),
             ]);
@@ -58,15 +58,14 @@ export class SystemDetector {
     }
     async checkOllama() {
         try {
-            // Use native fetch API (available in Node.js 18+)
-            const response = await fetch('http://localhost:11434/api/version');
+            const response = await fetch(`${getOllamaBaseUrl()}/api/version`);
             if (!response.ok) {
                 return { available: false, version: null };
             }
             const data = await response.json();
             return { available: true, version: data.version };
         }
-        catch (error) {
+        catch {
             // Ollama is not running or not installed
             return { available: false, version: null };
         }
@@ -215,7 +214,7 @@ export class SystemDetector {
         }
         lines.push(`  Hardware Score: ${hwScore.score.toFixed(1)}/100 (CPU: ${hwScore.cpuScore.toFixed(1)}, GPU: ${hwScore.gpuScore.toFixed(1)})`);
         lines.push(`  Ollama: ${info.ollamaAvailable ? `v${info.ollamaVersion}` : 'Not detected'}`);
-        return lines.join('\\n');
+        return lines.join('\n');
     }
 }
 //# sourceMappingURL=system-detection.js.map

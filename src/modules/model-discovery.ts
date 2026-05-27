@@ -1,3 +1,5 @@
+import { getOllamaBaseUrl } from './ollama.js';
+
 export interface OllamaModel {
   name: string;
   model: string;
@@ -39,7 +41,7 @@ export interface PopularModel {
 }
 
 export class ModelDiscovery {
-  private baseUrl = 'http://localhost:11434';
+  private baseUrl = getOllamaBaseUrl();
 
   // Popular models based on Ollama registry and community usage
   private popularModels: PopularModel[] = [

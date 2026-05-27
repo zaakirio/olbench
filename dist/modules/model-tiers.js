@@ -225,15 +225,16 @@ export class ModelTierManager {
     getHardwareAwareRecommendations(systemInfo, count = 3) {
         // Calculate effective RAM (available - 2GB buffer)
         const effectiveRAM = Math.max(0, systemInfo.availableRAM - 2);
-        // Get all models that can run with effective RAM
-        const viableModels = [];
+        // Get all models that can run with effective RAM (deduplicated)
+        const modelMap = new Map();
         for (const tier of this.tiers) {
             for (const model of tier.models) {
-                if (model.memoryRequirement <= effectiveRAM) {
-                    viableModels.push(model);
+                if (model.memoryRequirement <= effectiveRAM && !modelMap.has(model.name)) {
+                    modelMap.set(model.name, model);
                 }
             }
         }
+        const viableModels = Array.from(modelMap.values());
         // Score models based on hardware
         const scoredModels = viableModels.map(model => {
             let score = 100 - model.priority; // Base score (inverse priority)
@@ -297,7 +298,7 @@ export class ModelTierManager {
         tier.models.forEach((model, index) => {
             lines.push(`    ${index + 1}. ${model.name}${model.description ? ' - ' + model.description : ''}`);
         });
-        return lines.join('\\n');
+        return lines.join('\n');
     }
 }
 //# sourceMappingURL=model-tiers.js.map
